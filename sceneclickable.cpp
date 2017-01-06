@@ -15,12 +15,10 @@ SceneClickable::SceneClickable(QObject *parent) :
 
 void SceneClickable::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    //std::cout<<"Yo!\n";
-
     // Get position of clicked pixel inside the scene
     QPointF clickedPosition=mouseEvent->scenePos();
 
-    // To manipulate directly the image : ??
+    // To manipulate directly the image :
     QList<QGraphicsItem *> listeItems=QGraphicsScene::items();
     if (listeItems.size()==1)
     {
@@ -29,7 +27,7 @@ void SceneClickable::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             // Gets first element of list
             QGraphicsPixmapItem* pixmapitem=(QGraphicsPixmapItem*)listeItems[0];
 
-            // Convert qgraphicspixmpaitem to qimage
+            // Convert qgraphicspixmapitem to qimage
             QImage myImage=pixmapitem->pixmap().toImage();
 
             // Get color of clicked pixel inside the scene
@@ -43,6 +41,61 @@ void SceneClickable::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             return;
         }
     }
-    //erreur
-
+    // Else error
 }
+
+
+void SceneClickable::maskThings(std::vector<float> vect)
+{
+
+    std::cout<<"Mask"<<std::endl;
+
+
+    // Creates a list of QGraphicsScene objects in scene
+    QList<QGraphicsItem *> listeItems=QGraphicsScene::items();
+    if (listeItems.size()==1)
+    {
+        // If only type of list is a graphicsPixmapItem
+        if (listeItems[0]->type()==7) // 7:graphicsPixmapItem
+        {
+            // Gets first element of list
+            QGraphicsPixmapItem* pixmapitem=(QGraphicsPixmapItem*)listeItems[0];
+
+            // Convert qgraphicspixmapitem to qimage
+            QImage myImage=pixmapitem->pixmap().toImage();
+
+            int imageWidth=myImage.width();
+            std::cout<<"largeur image="<<imageWidth<<std::endl;
+            int imageHeight=myImage.height();
+            std::cout<<"hauteur image="<<imageHeight<<std::endl;
+
+
+            // Color of selected pixel
+            QRgb colorMask=QColor(224,44,224).rgb();
+
+            for(int i=0;i<imageHeight;i++)
+            {
+                for(int j=0;j<imageWidth;j++)
+                {
+                    // color all of the image for now
+                    myImage.setPixel(j,i, colorMask);
+
+                }
+            }
+
+
+            // usual return of item in list, error else
+            // Convert image from QImage to QPixmap
+            pixmapitem->setPixmap(QPixmap::fromImage(myImage));
+
+            return;
+        }
+    }
+}
+
+
+void SceneClickable::addImage(QPixmap pixmap)
+{
+    pixmapitem=addPixmap(pixmap);
+}
+

@@ -44,11 +44,13 @@ public slots:
     void setReferenceColor(QColor coul);
     std::vector<float> setColorAmplitude();
     std::vector<float> convertRGBtoTSL(int R,int G,int B);
-    void maskDefinedInterval();
+    void maskDefinedInterval(QImage img);
     void defineSelection(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL);
 
 signals:
     void pressLabel();
+    void changeSelec(std::vector<float>);
+
 };
 
 #endif // MAINWINDOW_H

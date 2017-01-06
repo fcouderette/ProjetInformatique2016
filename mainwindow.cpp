@@ -49,6 +49,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Connexion of signal from class sceneclickable and method setReferenceColor from mainwindow
     QObject::connect(&mScene, SIGNAL(colorSelected(QColor)), this , SLOT(setReferenceColor(QColor)));
+
+    // Connexion of signal from class sceneclickable and method setReferenceColor from mainwindow
+    //QObject::connect(this, SIGNAL(changeSelect(std::vector<float>)), &mScene , SLOT(maskThings(std::vector<float>)));
 }
 
 MainWindow::~MainWindow()
@@ -79,7 +82,7 @@ void MainWindow::chooseImage()
     chemin_image=QFileDialog::getOpenFileName(this,"Select Image", "/home","Images(*.jpg *.png)");
 
     // Associates image to scene
-    mScene.addPixmap(QPixmap(chemin_image));
+    mScene.addImage(QPixmap(chemin_image));
 }
 
 //RAS
@@ -204,14 +207,14 @@ std::vector<float> MainWindow::setColorAmplitude()
     // Return a vector containing length of selection interval
     mvectorAmpliHSL={mValeur_AH,mValeur_AS,mValeur_AL};
 
-    //emettre signal
+
 
     defineSelection(mvectorHSL,mvectorAmpliHSL);
 
     return mvectorAmpliHSL;
 }
 
-
+//RAS
 void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL)
 {
     std::cout<<"\n*** defineSelection() ***"<<std::endl;
@@ -223,30 +226,29 @@ void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float>
     std::vector<float> selectionInterval{vectorHSL[0], vectorHSL[0]+vectorAmpliHSL[0], vectorHSL[1], vectorHSL[1]+vectorAmpliHSL[1], vectorHSL[2], vectorHSL[2]+vectorAmpliHSL[2]};
 
     std::cout<<"bound T- = "<<selectionInterval[0]<<std::endl;
-    // hue : [0;360]
-    std::cout<<"bound T+ = "<<selectionInterval[1]<<std::endl;
-    // If sum of reference value and amplitude value for hue >360 :
-    //if(selectionInterval[1]>360){selectionInterval[1]=360;}
     std::cout<<"bound T+ = "<<selectionInterval[1]<<std::endl;
 
     std::cout<<"bound S- = "<<selectionInterval[2]<<std::endl;
-    // saturation : [0;100]
-    // If sum of reference value and amplitude value for saturation >100 :
-    //if(selectionInterval[3]>100){selectionInterval[3]=100;}
     std::cout<<"bound S+ = "<<selectionInterval[3]<<std::endl;
 
     std::cout<<"bound L- = "<<selectionInterval[4]<<std::endl;
-    // luminosity : [0;100]
-    // If sum of reference value and amplitude value for luminosity >100 :
-    //if(selectionInterval[5]>100){selectionInterval[5]=100;}
     std::cout<<"bound L+ = "<<selectionInterval[5]<<std::endl;
+
+    mScene.maskThings(selectionInterval);
+
+    //emit changeSelec(selectionInterval);
+
+    // maskDefinedInterval
 
 }
 
 
 
-void MainWindow::maskDefinedInterval()
+void MainWindow::maskDefinedInterval(QImage img)
 {
+    mScene.addPixmap(QPixmap::fromImage(img));
+
+
     // pour tout pixel de l'image
     //for (int x=0, x<XX, x++)
     //{for(int y=0, y<YY,y++){
