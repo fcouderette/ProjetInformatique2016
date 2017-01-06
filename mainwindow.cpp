@@ -13,10 +13,10 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    mScene(),
     mValeur_R(0),
     mValeur_G(0),
     mValeur_B(0),
-    mScene(),
     mValeur_AH(0),
     mValeur_AS(0),
     mValeur_AL(0),
@@ -215,18 +215,30 @@ void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float>
 
     // Create a vector containing interval of selection bounds
     std::vector<float> selectionInterval{vectorHSL[0], vectorHSL[0]+vectorAmpliHSL[0], vectorHSL[1], vectorHSL[1]+vectorAmpliHSL[1], vectorHSL[2], vectorHSL[2]+vectorAmpliHSL[2]};
+
     std::cout<<"bound T- = "<<selectionInterval[0]<<std::endl;
+    // hue : [0;360]
+    // If sum of reference value and amplitude value for hue >360 :
+    if(selectionInterval[1]>360){selectionInterval[1]=360;}
     std::cout<<"bound T+ = "<<selectionInterval[1]<<std::endl;
+
     std::cout<<"bound S- = "<<selectionInterval[2]<<std::endl;
+    // saturation : [0;100]
+    // If sum of reference value and amplitude value for saturation >100 :
+    if(selectionInterval[3]>100){selectionInterval[3]=100;}
     std::cout<<"bound S+ = "<<selectionInterval[3]<<std::endl;
+
     std::cout<<"bound L- = "<<selectionInterval[4]<<std::endl;
+    // luminosity : [0;100]
+    // If sum of reference value and amplitude value for luminosity >100 :
+    if(selectionInterval[5]>100){selectionInterval[5]=100;}
     std::cout<<"bound L+ = "<<selectionInterval[5]<<std::endl;
 
 }
 
 
-/*
-void maskSelectedAmplitude()
+
+void MainWindow::maskDefinedInterval()
 {
     // pour tout pixel de l'image
     //for (int x=0, x<XX, x++)
@@ -242,4 +254,4 @@ void maskSelectedAmplitude()
 
     //pbs : comment considerer une etendue de pixels avec Qt ? comment parcourir les pixels ?
 }
-*/
+

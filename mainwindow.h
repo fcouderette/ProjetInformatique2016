@@ -34,9 +34,6 @@ private:
     float mValeur_AH;
     float mValeur_AS;
     float mValeur_AL;
-    int colourPixel_R;
-    int colourPixel_G;
-    int colourPixel_B;
     std::vector<float> mvectorHSL;
     std::vector<float> mvectorAmpliHSL;
 
@@ -47,8 +44,7 @@ public slots:
     void setReferenceColor(QColor coul);
     std::vector<float> setColorAmplitude();
     std::vector<float> convertRGBtoTSL(int R,int G,int B);
-    //int getColourOfClickedPixel();
-    //void maskSelectedAmplitude();
+    void maskDefinedInterval();
     void defineSelection(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL);
 
 signals:
