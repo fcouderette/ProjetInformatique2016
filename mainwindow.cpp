@@ -122,20 +122,48 @@ std::vector<float> MainWindow::convertRGBtoTSL(int R,int G,int B)
     int C=Max-Min;
     std::cout<<"C = "<<C<<std::endl;
 
-    // Saturation    PROBLEME DE FLOAT/INT ???
-    mValeur_S=100*(double(C)/double(Max));
-    std::cout<<"SaturationRef : "<<mValeur_S<<std::endl;
+    if (R==255 && G==255 && B==255)
+    {
+        mValeur_H=0;
+        mValeur_S=0;
+        mValeur_L=100;
+    }
+    else if (R==0 && G==0 && B==0){
+        mValeur_H=0;
+        mValeur_S=0;
+        mValeur_L=0;
+    }
+    else
+    {
+        // Hue
+        // max is red
+        if(Max==R && Max!=G && Max!=B){mValeur_H=60*(fmod(abs(float(G-B))/float(C),6));}
+        // max is green
+        else if(Max==G && Max!=R && Max!=B){mValeur_H=60*(2+(float((B-R)/C)));}
+        // max is blue
+        else if(Max==B && Max!=G && Max!=R){mValeur_H=60*(4+(float((R-G)/C)));}
+        // max is red=blue
+        else if(Max==B && Max==R && Max!=G){mValeur_H=60*(4+(float((R-G)/C)));}
+        // max is red=green
+        else if(Max==G && Max==R && Max!=B){mValeur_H=60*(2+(float((B-R)/C)));}
+        // max is blue=green
+        else if(Max==G && Max==B && Max!=R){mValeur_H=60*(2+(float((B-R)/C)));}
+        // red=green=blue
+        else if(Max==G && Max==R && Max==B){mValeur_H=0;}
+
+        std::cout<<"HueRef : "<<mValeur_H<<std::endl;
+
+        // Saturation    PROBLEME DE FLOAT/INT ???
+        mValeur_S=100*(float(C)/float(Max));
+        std::cout<<"SaturationRef : "<<mValeur_S<<std::endl;
 
 
-    // Luminosity
-    mValeur_L=100*(double(C)/225);
-    std::cout<<"LuminosityRef : "<<mValeur_L<<std::endl;
+        // Luminosity
+        mValeur_L=100*(float(Max)/255);
+        std::cout<<"LuminosityRef : "<<mValeur_L<<std::endl;
+    }
 
-    // Hue
-    if(Max==R){mValeur_H=60*(fmod(abs(double(G-B))/double(C),6));}
-    else if(Max==G){mValeur_H=60*(2+((B-R)/C));}
-    else if(Max==B){mValeur_H=60*(4+((R-G)/C));}
-    std::cout<<"HueRef : "<<mValeur_H<<std::endl;
+
 
     // return a vector with HSL float values
     std::vector<float> vectorHSL {mValeur_H,mValeur_S,mValeur_L};
