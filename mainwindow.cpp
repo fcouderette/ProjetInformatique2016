@@ -19,7 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     mScene(),
     mValeur_AH(0),
     mValeur_AS(0),
-    mValeur_AL(0)
+    mValeur_AL(0),
+    mvectorHSL({0,0,0}),
+    mvectorAmpliHSL({0,0,0})
 {
     ui->setupUi(this);
     ui->graphicsView_Image->installEventFilter(this);
@@ -37,14 +39,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this, SIGNAL(pressLabel()), this , SLOT(getColourOfClickedPixel()));
 
     // Initialize reference colour
-    //QObject::connect(ui->graphicsView_Image, SIGNAL(clicked()), this , SLOT(setReferenceColor()));
     QObject::connect(this, SIGNAL(pressLabel()), this , SLOT(setReferenceColor()));
-    //QObject::connect(this, SIGNAL(pressLabel()), this , SLOT(convertRGBtoTSL()));
+
     QObject::connect(ui->horizontalSlider_AT, SIGNAL(valueChanged(int)), this , SLOT(setColorAmplitude()));
     QObject::connect(ui->horizontalSlider_AS, SIGNAL(valueChanged(int)), this , SLOT(setColorAmplitude()));
     QObject::connect(ui->horizontalSlider_AL, SIGNAL(valueChanged(int)), this , SLOT(setColorAmplitude()));
 
-    // Connexion of signal from class sceneclickable and methof setReferenceColor from mainwindow
+    //QObject::connect(this, SIGNAL(setColorAmplitude()), this , SLOT(setColorAmplitude()));
+
+    // Connexion of signal from class sceneclickable and method setReferenceColor from mainwindow
     QObject::connect(&mScene, SIGNAL(colorSelected(QColor)), this , SLOT(setReferenceColor(QColor)));
 }
 
@@ -94,11 +97,12 @@ void MainWindow::setReferenceColor(QColor coul)
     ui->text_value_G->setText(QString("%1").arg(mValeur_G));//.toStdString());
     ui->text_value_B->setText(QString("%1").arg(mValeur_B));//.toStdString());
 
-    std::vector<float> vectorHSL=convertRGBtoTSL(mValeur_R,mValeur_G,mValeur_B);
+    // Convert RGB to HSL
+    mvectorHSL=convertRGBtoTSL(mValeur_R,mValeur_G,mValeur_B);
     // Setting of value in interface
-    ui->text_value_H->setText(QString("%1").arg(vectorHSL[0]));
-    ui->text_value_S->setText(QString("%1").arg(vectorHSL[1]));
-    ui->text_value_L->setText(QString("%1").arg(vectorHSL[2]));
+    ui->text_value_H->setText(QString("%1").arg(mvectorHSL[0]));
+    ui->text_value_S->setText(QString("%1").arg(mvectorHSL[1]));
+    ui->text_value_L->setText(QString("%1").arg(mvectorHSL[2]));
 
     //mValeur_R=mValeurRef+ui.RedSlider->value();
 }
@@ -153,7 +157,7 @@ std::vector<float> MainWindow::convertRGBtoTSL(int R,int G,int B)
 
         std::cout<<"HueRef : "<<mValeur_H<<std::endl;
 
-        // Saturation    PROBLEME DE FLOAT/INT ???
+        // Saturation
         mValeur_S=100*(float(C)/float(Max));
         std::cout<<"SaturationRef : "<<mValeur_S<<std::endl;
 
@@ -179,9 +183,11 @@ std::vector<float> MainWindow::convertRGBtoTSL(int R,int G,int B)
 }
 
 //RAS
-void MainWindow::setColorAmplitude()
+std::vector<float> MainWindow::setColorAmplitude()
 {
     std::cout<<"\n*** setColorAmplitude() ***"<<std::endl;
+
+    // Put value from slider inside mValeur_AH
     mValeur_AH=ui->horizontalSlider_AT->value();
     std::cout<<"mValeur_AH = "<<mValeur_AH<<std::endl;
     //mValeur_R=mValeurRef+ui.RedSlider->value();
@@ -191,42 +197,33 @@ void MainWindow::setColorAmplitude()
 
     mValeur_AL=ui->horizontalSlider_AL->value();
     std::cout<<"mValeur_AL = "<<mValeur_AL<<std::endl;
+
+    // Return a vector containing length of selection interval
+    mvectorAmpliHSL={mValeur_AH,mValeur_AS,mValeur_AL};
+
+    //emettre signal
+
+    defineSelection(mvectorHSL,mvectorAmpliHSL);
+
+    return mvectorAmpliHSL;
 }
 
 
-// Inutile
-int MainWindow::getColourOfClickedPixel()
+void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL)
 {
-    // 1 : get coordinates of clicked point
-//    int xposition=QMouseEvent::x(graphicsView_Image);
-    //int yposition=QMouseEvent::y();
-//    std::cout<<"clic x = "<<xposition<<std::endl;
-    //std::cout<<"clic y = "<<yposition<<std::endl;
+    std::cout<<"\n*** defineSelection() ***"<<std::endl;
 
-    // 2 : get colour at these coordinates
-
-    //std::cout<<QImage::pixelColor(int xposition, int yposition)<<std::endl;
-    //int rr=QImage::pixelColor(int xposition, int yposition).red(); ??
-    //setReferenceColor(rr,gg,bb);
-
-    //amplitude : colourPixel_R = ui.horizontalSlider_AT->value();
-//    return xposition;
+    // Create a vector containing interval of selection bounds
+    std::vector<float> selectionInterval{vectorHSL[0], vectorHSL[0]+vectorAmpliHSL[0], vectorHSL[1], vectorHSL[1]+vectorAmpliHSL[1], vectorHSL[2], vectorHSL[2]+vectorAmpliHSL[2]};
+    std::cout<<"bound T- = "<<selectionInterval[0]<<std::endl;
+    std::cout<<"bound T+ = "<<selectionInterval[1]<<std::endl;
+    std::cout<<"bound S- = "<<selectionInterval[2]<<std::endl;
+    std::cout<<"bound S+ = "<<selectionInterval[3]<<std::endl;
+    std::cout<<"bound L- = "<<selectionInterval[4]<<std::endl;
+    std::cout<<"bound L+ = "<<selectionInterval[5]<<std::endl;
 
 }
 
-/*
-void defineAmplitudeSelection(int Rref, int Gref, int Bref, float ampliH, float ampliS, float ampliL)
-{
-
-    //std::vector<float*> amplitudeInterval{Href, Rref+ampliH, Sref, Sref+ampliS, Lref, Lref+ampliL};
-}
-*/
-
-/*
-void getColourOfClickedPixel_G(){}
-
-void getColourOfClickedPixel_B(){}
-*/
 
 /*
 void maskSelectedAmplitude()
