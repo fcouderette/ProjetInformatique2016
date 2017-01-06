@@ -73,12 +73,16 @@ void SceneClickable::maskThings(std::vector<float> vect)
             // Color of selected pixel
             QRgb colorMask=QColor(224,44,224).rgb();
 
-            for(int i=0;i<imageHeight;i++)
+            for(int i=0;i<imageWidth;i++)
             {
-                for(int j=0;j<imageWidth;j++)
+                for(int j=0;j<imageHeight;j++)
                 {
+                    QColor colorPix=myImage.pixel(i,j);
+                    //vect=MainWindow::convertRGBtoTSL(colorPix.red(),colorPix.green(),colorPix.blue());
+
                     // color all of the image for now
-                    myImage.setPixel(j,i, colorMask);
+
+                    myImage.setPixel(i,j, colorMask);
 
                 }
             }
