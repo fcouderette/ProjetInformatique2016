@@ -188,13 +188,16 @@ std::vector<float> MainWindow::setColorAmplitude()
     std::cout<<"\n*** setColorAmplitude() ***"<<std::endl;
 
     // Put value from slider inside mValeur_AH
+    ui->horizontalSlider_AT->setRange(0, 360-mValeur_H);
     mValeur_AH=ui->horizontalSlider_AT->value();
     std::cout<<"mValeur_AH = "<<mValeur_AH<<std::endl;
     //mValeur_R=mValeurRef+ui.RedSlider->value();
 
+    ui->horizontalSlider_AS->setRange(0, 100-mValeur_S);
     mValeur_AS=ui->horizontalSlider_AS->value();
     std::cout<<"mValeur_AS = "<<mValeur_AS<<std::endl;
 
+    ui->horizontalSlider_AL->setRange(0, 100-mValeur_L);
     mValeur_AL=ui->horizontalSlider_AL->value();
     std::cout<<"mValeur_AL = "<<mValeur_AL<<std::endl;
 
@@ -212,26 +215,30 @@ std::vector<float> MainWindow::setColorAmplitude()
 void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL)
 {
     std::cout<<"\n*** defineSelection() ***"<<std::endl;
+    std::cout<<"bound T = "<<vectorAmpliHSL[0]<<std::endl;
+    std::cout<<"bound S = "<<vectorAmpliHSL[1]<<std::endl;
+    std::cout<<"bound L = "<<vectorAmpliHSL[2]<<std::endl;
 
     // Create a vector containing interval of selection bounds
     std::vector<float> selectionInterval{vectorHSL[0], vectorHSL[0]+vectorAmpliHSL[0], vectorHSL[1], vectorHSL[1]+vectorAmpliHSL[1], vectorHSL[2], vectorHSL[2]+vectorAmpliHSL[2]};
 
     std::cout<<"bound T- = "<<selectionInterval[0]<<std::endl;
     // hue : [0;360]
+    std::cout<<"bound T+ = "<<selectionInterval[1]<<std::endl;
     // If sum of reference value and amplitude value for hue >360 :
-    if(selectionInterval[1]>360){selectionInterval[1]=360;}
+    //if(selectionInterval[1]>360){selectionInterval[1]=360;}
     std::cout<<"bound T+ = "<<selectionInterval[1]<<std::endl;
 
     std::cout<<"bound S- = "<<selectionInterval[2]<<std::endl;
     // saturation : [0;100]
     // If sum of reference value and amplitude value for saturation >100 :
-    if(selectionInterval[3]>100){selectionInterval[3]=100;}
+    //if(selectionInterval[3]>100){selectionInterval[3]=100;}
     std::cout<<"bound S+ = "<<selectionInterval[3]<<std::endl;
 
     std::cout<<"bound L- = "<<selectionInterval[4]<<std::endl;
     // luminosity : [0;100]
     // If sum of reference value and amplitude value for luminosity >100 :
-    if(selectionInterval[5]>100){selectionInterval[5]=100;}
+    //if(selectionInterval[5]>100){selectionInterval[5]=100;}
     std::cout<<"bound L+ = "<<selectionInterval[5]<<std::endl;
 
 }
