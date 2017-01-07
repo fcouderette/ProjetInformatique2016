@@ -75,7 +75,7 @@ void SceneClickable::maskThings(std::vector<float> vect)
             int imageHeight=myImage.height();
             std::cout<<"hauteur image="<<imageHeight<<std::endl;
 
-            //QImage temporaryImage(int imageWidth, int imageHeight, QImage::Format_RGB444);
+            QImage temporaryImage(int imageWidth, int imageHeight, QImage::Format_RGB444);
 
 
             // Color of selected pixel
@@ -113,11 +113,12 @@ void SceneClickable::maskThings(std::vector<float> vect)
                         compteur+=1;
                         std::cout<<"********** HELLO compteur pixels : "<<compteur<<std::endl;
                         // color all of the image for now
-                        myImage.setPixel(iLine,iCol, colorMask);
+                        temporaryImage.setPixel(iLine,iCol, colorMask);
                     }
                     else
                     {
                         //couleur originale
+                        temporaryImage.setPixel(iLine,iCol, temporaryImage.pixel(iLine,iCol).rgb());
                     }
 
 
