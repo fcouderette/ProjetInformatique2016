@@ -2,6 +2,7 @@
 #define SCENECLICKABLE_H
 
 #include <QGraphicsScene>
+#include <vector>
 
 class SceneClickable : public QGraphicsScene
 {
@@ -9,6 +10,7 @@ class SceneClickable : public QGraphicsScene
 public:
     explicit SceneClickable(QObject *parent = 0);
     void addImage(QPixmap);
+    std::vector<float> sceneConvertRGBtoTSL(int R,int G,int B);
 
 
 signals:
@@ -20,6 +22,11 @@ public slots:
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     QGraphicsPixmapItem* pixmapitem;
+
+private:
+    float mValeur_H;
+    float mValeur_S;
+    float mValeur_L;
 
 };
 

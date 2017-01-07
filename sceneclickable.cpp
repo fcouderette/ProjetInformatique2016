@@ -1,13 +1,19 @@
 #include "sceneclickable.h"
-#include<iostream>
+#include<mainwindow.h>
+
+#include <iostream>
 #include <string>
 #include <math.h>
 #include <QGraphicsSceneMouseEvent>
 #include <QImage>
-#include<QGraphicsPixmapItem>
+#include <QGraphicsPixmapItem>
+
 
 SceneClickable::SceneClickable(QObject *parent) :
-    QGraphicsScene(parent)
+    QGraphicsScene(parent),
+    mValeur_H(0),
+    mValeur_S(0),
+    mValeur_L(0)
 {
 
 
@@ -69,20 +75,52 @@ void SceneClickable::maskThings(std::vector<float> vect)
             int imageHeight=myImage.height();
             std::cout<<"hauteur image="<<imageHeight<<std::endl;
 
+            //QImage temporaryImage(int imageWidth, int imageHeight, QImage::Format_RGB444);
+
 
             // Color of selected pixel
             QRgb colorMask=QColor(224,44,224).rgb();
+            std::cout<<"Got color for mask\n"<<std::endl;
 
-            for(int i=0;i<imageWidth;i++)
+
+
+            int compteur=0;
+            for(int iLine=0;iLine<imageWidth;iLine++)
             {
-                for(int j=0;j<imageHeight;j++)
+                for(int iCol=0;iCol<imageHeight;iCol++)
                 {
-                    QColor colorPix=myImage.pixel(i,j);
-                    //vect=MainWindow::convertRGBtoTSL(colorPix.red(),colorPix.green(),colorPix.blue());
+                    std::cout<<"Got in loop"<<std::endl;
 
-                    // color all of the image for now
+                    QColor colorPix=myImage.pixel(iLine,iCol);
 
-                    myImage.setPixel(i,j, colorMask);
+                    std::vector<float> localVect=sceneConvertRGBtoTSL(colorPix.red(),colorPix.green(),colorPix.blue());
+
+                    //std::vector<float> localVect={colorPix.hslHue(),colorPix.hslSaturation(),colorPix.lightness()};
+                    //std::cout<<colorPix.hslHue()<<std::endl;
+                    std::cout<<"colorPix.h : "<<localVect[0]<<std::endl;
+                    std::cout<<"colorPix.s : "<<localVect[1]<<std::endl;
+                    std::cout<<"colorPix.l : "<<localVect[2]<<"\n"<<std::endl;
+
+                    //std::cout<<"Color converted"<<std::endl;
+
+                    std::cout<<"Intervalle : "<<vect[0]<<" ; "<<vect[1]<<std::endl;
+                    std::cout<<"Intervalle : "<<vect[2]<<" ; "<<vect[3]<<std::endl;
+                    std::cout<<"Intervalle : "<<vect[4]<<" ; "<<vect[5]<<"\n"<<std::endl;
+
+                    // if hue in [huemin;huemax] and saturation in [saturationmin;saturationmax] and and luminosity in [luminositymin;luminositymax]
+                    if(localVect[0]>=vect[0] && localVect[0]<=vect[1] && localVect[1]>=vect[2] && localVect[1]<=vect[3] && localVect[2]>=vect[4] && localVect[2]<=vect[5])
+                    {
+                        compteur+=1;
+                        std::cout<<"********** HELLO compteur pixels : "<<compteur<<std::endl;
+                        // color all of the image for now
+                        myImage.setPixel(iLine,iCol, colorMask);
+                    }
+                    else
+                    {
+                        //couleur originale
+                    }
+
+
 
                 }
             }
@@ -102,4 +140,79 @@ void SceneClickable::addImage(QPixmap pixmap)
 {
     pixmapitem=addPixmap(pixmap);
 }
+
+
+std::vector<float> SceneClickable::sceneConvertRGBtoTSL(int R,int G,int B)
+{
+    //std::cout<<"\n*** SceneClickable::sceneConvertRGBtoTSL() ***"<<std::endl;
+
+    //determination of maximum among R,G,B
+    std::cout<<"\nR : "<<R<<", G : "<<G<<", B : "<<B<<std::endl;
+    int Max=std::max(std::max(R,G),B);
+    int Min=std::min(std::min(R,G),B);
+
+    std::cout<<"Max : "<<Max<<std::endl;
+    std::cout<<"Min : "<<Min<<std::endl;
+
+
+
+    // Difference Max-Min
+    int C=Max-Min;
+    std::cout<<"C = "<<C<<std::endl;
+
+    if (R==255 && G==255 && B==255)
+    {
+        mValeur_H=0;
+        mValeur_S=0;
+        mValeur_L=100;
+    }
+    else if (R==0 && G==0 && B==0){
+        mValeur_H=0;
+        mValeur_S=0;
+        mValeur_L=0;
+    }
+    else
+    {
+        // Hue
+        // max is red
+        if(Max==R && Max!=G && Max!=B){mValeur_H=60*(fmod(abs(float(G-B))/float(C),6));}
+        // max is green
+        else if(Max==G && Max!=R && Max!=B){mValeur_H=60*(2+(float((B-R)/C)));}
+        // max is blue
+        else if(Max==B && Max!=G && Max!=R){mValeur_H=60*(4+(float((R-G)/C)));}
+        // max is red=blue
+        else if(Max==B && Max==R && Max!=G){mValeur_H=60*(4+(float((R-G)/C)));}
+        // max is red=green
+        else if(Max==G && Max==R && Max!=B){mValeur_H=60*(2+(float((B-R)/C)));}
+        // max is blue=green
+        else if(Max==G && Max==B && Max!=R){mValeur_H=60*(2+(float((B-R)/C)));}
+        // red=green=blue
+        else if(Max==G && Max==R && Max==B){mValeur_H=0;}
+
+        std::cout<<"HueRef : "<<mValeur_H<<std::endl;
+
+        // Saturation
+        mValeur_S=100*(float(C)/float(Max));
+        std::cout<<"SaturationRef : "<<mValeur_S<<std::endl;
+
+
+        // Luminosity
+        mValeur_L=100*(float(Max)/255);
+        std::cout<<"LuminosityRef : "<<mValeur_L<<"\n"<<std::endl;
+    }
+    // return a vector with HSL float values
+    std::vector<float> vectorHSL {mValeur_H,mValeur_S,mValeur_L};
+
+    return vectorHSL;
+}
+
+
+
+
+
+
+
+
+
+
 

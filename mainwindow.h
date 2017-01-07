@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <qgraphicsscene.h>
 #include "sceneclickable.h"
-#include<vector>
+#include <vector>
 
 namespace Ui {
 class MainWindow;
@@ -18,6 +18,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     bool eventFilter(QObject *obj, QEvent *event);
+    std::vector<float> mvectorHSL;
+    std::vector<float> mvectorAmpliHSL;
 
 private:
     Ui::MainWindow *ui;
@@ -34,8 +36,7 @@ private:
     float mValeur_AH;
     float mValeur_AS;
     float mValeur_AL;
-    std::vector<float> mvectorHSL;
-    std::vector<float> mvectorAmpliHSL;
+
 
 
 
@@ -46,6 +47,7 @@ public slots:
     std::vector<float> convertRGBtoTSL(int R,int G,int B);
     void maskDefinedInterval(QImage img);
     void defineSelection(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL);
+    //void writeXmlFile();
 
 signals:
     void pressLabel();
