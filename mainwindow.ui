@@ -400,6 +400,9 @@
       </property>
      </widget>
      <widget class="QCheckBox" name="showOriginalImage_checkBox">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>1070</x>

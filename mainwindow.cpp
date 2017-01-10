@@ -246,6 +246,7 @@ std::vector<float> MainWindow::setColorAmplitude()
 
     //ui->showOriginalImage_checkBox->;
     ui->pushButton_Export->setEnabled(true);
+    ui->showOriginalImage_checkBox->setEnabled(true);
 
     return mvectorAmpliHSL;
 }
