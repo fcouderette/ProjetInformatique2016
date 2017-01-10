@@ -30,16 +30,6 @@
      <attribute name="title">
       <string>Determination of color parameters</string>
      </attribute>
-     <widget class="QTextEdit" name="textEdit_CF">
-      <property name="geometry">
-       <rect>
-        <x>1050</x>
-        <y>520</y>
-        <width>151</width>
-        <height>81</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_AS">
       <property name="geometry">
        <rect>
@@ -292,19 +282,6 @@
        <string>Lightness :</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_CF">
-      <property name="geometry">
-       <rect>
-        <x>1070</x>
-        <y>490</y>
-        <width>121</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Reference Color</string>
-      </property>
-     </widget>
      <widget class="QGraphicsView" name="graphicsView_Image">
       <property name="geometry">
        <rect>
@@ -417,6 +394,22 @@
       </property>
       <property name="text">
        <string>0</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="showOriginalImage_pushbutton">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>1000</x>
+        <y>580</y>
+        <width>251</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Show Original Image</string>
       </property>
      </widget>
     </widget>

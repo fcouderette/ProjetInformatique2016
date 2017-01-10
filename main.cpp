@@ -1,5 +1,9 @@
 #include "mainwindow.h"
 #include <QApplication>
+#include <tinyxml2.h>
+
+
+
 
 int main(int argc, char *argv[])
 {

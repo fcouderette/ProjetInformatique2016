@@ -4,6 +4,7 @@
 #include <qinputdialog.h>
 #include <qfiledialog.h>
 #include <math.h>
+#include <tinyxml2.h>
 
 #include <QMouseEvent>
 #include <string>
@@ -216,21 +217,21 @@ std::vector<float> MainWindow::convertRGBtoTSL(int R,int G,int B)
 //RAS
 std::vector<float> MainWindow::setColorAmplitude()
 {
-    std::cout<<"\n*** setColorAmplitude() ***"<<std::endl;
+    //std::cout<<"\n*** setColorAmplitude() ***"<<std::endl;
 
     // Put value from slider inside mValeur_AH
     ui->horizontalSlider_AT->setRange(0, 360-mValeur_H);
     mValeur_AH=ui->horizontalSlider_AT->value();
-    std::cout<<"mValeur_AH = "<<mValeur_AH<<std::endl;
+    //std::cout<<"mValeur_AH = "<<mValeur_AH<<std::endl;
     //mValeur_R=mValeurRef+ui.RedSlider->value();
 
     ui->horizontalSlider_AS->setRange(0, 100-mValeur_S);
     mValeur_AS=ui->horizontalSlider_AS->value();
-    std::cout<<"mValeur_AS = "<<mValeur_AS<<std::endl;
+    //std::cout<<"mValeur_AS = "<<mValeur_AS<<std::endl;
 
     ui->horizontalSlider_AL->setRange(0, 100-mValeur_L);
     mValeur_AL=ui->horizontalSlider_AL->value();
-    std::cout<<"mValeur_AL = "<<mValeur_AL<<std::endl;
+    //std::cout<<"mValeur_AL = "<<mValeur_AL<<std::endl;
 
     // Return a vector containing length of selection interval
     mvectorAmpliHSL={mValeur_AH,mValeur_AS,mValeur_AL};

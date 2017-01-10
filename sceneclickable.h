@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 #include <vector>
+#include <QImage>
 
 class SceneClickable : public QGraphicsScene
 {
@@ -22,11 +23,13 @@ public slots:
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     QGraphicsPixmapItem* pixmapitem;
+    void fromOneImageToAnother(QPixmap pixmap1, QPixmap pixmap2);
 
 private:
     float mValeur_H;
     float mValeur_S;
     float mValeur_L;
+    QImage temporaryImage;
 
 };
 
