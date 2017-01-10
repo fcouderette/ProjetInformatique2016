@@ -44,6 +44,9 @@
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_Export">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>1000</x>
@@ -396,20 +399,20 @@
        <string>0</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="showOriginalImage_pushbutton">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
+     <widget class="QCheckBox" name="showOriginalImage_checkBox">
       <property name="geometry">
        <rect>
-        <x>1000</x>
-        <y>580</y>
-        <width>251</width>
-        <height>31</height>
+        <x>1070</x>
+        <y>570</y>
+        <width>171</width>
+        <height>22</height>
        </rect>
       </property>
       <property name="text">
        <string>Show Original Image</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
       </property>
      </widget>
     </widget>

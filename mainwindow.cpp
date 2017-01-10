@@ -49,6 +49,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->horizontalSlider_AS, SIGNAL(valueChanged(int)), this , SLOT(setColorAmplitude()));
     QObject::connect(ui->horizontalSlider_AL, SIGNAL(valueChanged(int)), this , SLOT(setColorAmplitude()));
 
+
+
     //QObject::connect(this, SIGNAL(setColorAmplitude()), this , SLOT(setColorAmplitude()));
 
     // Connexion of signal from class sceneclickable and method setReferenceColor from mainwindow
@@ -56,6 +58,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Connexion of signal from class sceneclickable and method setReferenceColor from mainwindow
     //QObject::connect(this, SIGNAL(changeSelect(std::vector<float>)), &mScene , SLOT(maskThings(std::vector<float>)));
+
+    // Show unfiltered image when clicked on "Show Original Image" button
+    QObject::connect(ui->showOriginalImage_checkBox, SIGNAL(stateChanged()), this , SLOT(fromOneImageToAnother(QPixmap pixmap1, QPixmap pixmap2)
+    ));
 }
 
 MainWindow::~MainWindow()
@@ -237,6 +243,9 @@ std::vector<float> MainWindow::setColorAmplitude()
     mvectorAmpliHSL={mValeur_AH,mValeur_AS,mValeur_AL};
 
     defineSelection(mvectorHSL,mvectorAmpliHSL);
+
+    //ui->showOriginalImage_checkBox->;
+    ui->pushButton_Export->setEnabled(true);
 
     return mvectorAmpliHSL;
 }

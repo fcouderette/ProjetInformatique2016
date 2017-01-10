@@ -151,7 +151,7 @@ void SceneClickable::addImage(QPixmap pixmap)
 
 void SceneClickable::fromOneImageToAnother(QPixmap pixmap1, QPixmap pixmap2)
 {
-    /*
+
     QList<QGraphicsItem *> listeItems=QGraphicsScene::items();
 
 
@@ -162,9 +162,13 @@ void SceneClickable::fromOneImageToAnother(QPixmap pixmap1, QPixmap pixmap2)
         {
             // Gets first element of list
             QGraphicsPixmapItem* pixmapitem=(QGraphicsPixmapItem*)listeItems[0];
+
+            //Comment afficher l'image ??
         }
-        */
+
     }
+}
+
 
 
 
