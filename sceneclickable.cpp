@@ -149,25 +149,45 @@ void SceneClickable::addImage(QPixmap pixmap)
     pixmapitem=addPixmap(pixmap);
 }
 
-void SceneClickable::fromOneImageToAnother(QPixmap pixmap1, QPixmap pixmap2)
+void SceneClickable::fromOneImageToAnother()
 {
-
+/*
     QList<QGraphicsItem *> listeItems=QGraphicsScene::items();
-
-
-    if (listeItems.size()==2)
-    {
-        // If only type of list is a graphicsPixmapItem
-        if (listeItems[0]->type()==7) // 7:graphicsPixmapItem
+        if (listeItems.size()==2)
         {
-            // Gets first element of list
-            QGraphicsPixmapItem* pixmapitem=(QGraphicsPixmapItem*)listeItems[0];
+            // If checkbox is enabled
+            //if(MainWindow::ui->showOriginalImage_checkBox.enabled==true)
+            //{
+                // If only type of list is a graphicsPixmapItem
+                if (listeItems[0]->type()==7) // 7:graphicsPixmapItem
+                {
+                    // Gets first element of list
+                    QGraphicsPixmapItem* pixmapitem=(QGraphicsPixmapItem*)listeItems[0];
 
-            //Comment afficher l'image ??
+                    //Comment afficher l'image ??
+                    QGraphicsPixmapItem::setPixmap(pixmapitem);
+                    //ui->mScene->setPixmap(pixmapitem)
+                }
+            //}
+
+            // If checkbox is unenabled
+            //else if(MainWindow::ui->showOriginalImage_checkBox.enabled==false)
+            //{
+                // If only type of list is a graphicsPixmapItem
+                if (listeItems[1]->type()==7) // 7:graphicsPixmapItem
+                {
+                    // Gets first element of list
+                    QGraphicsPixmapItem* pixmapitem=(QGraphicsPixmapItem*)listeItems[1];
+
+
+                    //Comment afficher l'image ??
+                }
+            //}
         }
-
-    }
+*/
 }
+
+
 
 
 

@@ -3,8 +3,12 @@
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include <qfiledialog.h>
+#include <QWidget>
+#include <QObject>
+#include <QString>
 #include <math.h>
 #include <tinyxml2.h>
+
 
 #include <QMouseEvent>
 #include <string>
@@ -62,6 +66,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // Show unfiltered image when clicked on "Show Original Image" button
     QObject::connect(ui->showOriginalImage_checkBox, SIGNAL(stateChanged()), this , SLOT(fromOneImageToAnother(QPixmap pixmap1, QPixmap pixmap2)
     ));
+
+    QObject::connect(ui->pushButton_Export, SIGNAL(clicked()), this , SLOT(structurateXml()));
 }
 
 MainWindow::~MainWindow()
@@ -244,7 +250,7 @@ std::vector<float> MainWindow::setColorAmplitude()
 
     defineSelection(mvectorHSL,mvectorAmpliHSL);
 
-    //ui->showOriginalImage_checkBox->;
+    // Enables use of export and display of original image
     ui->pushButton_Export->setEnabled(true);
     ui->showOriginalImage_checkBox->setEnabled(true);
 
@@ -326,9 +332,34 @@ void MainWindow::writeXmlFile()
 }
 */
 
-/*
+
 void structurateXml( )
 {
+
+
+
+    QString xmlname = QFileDialog::getSaveFileName(0, QObject::tr("Save color parameters"), "/home", QObject::tr("*.xml"));
+    std::string xmlname_text = xmlname.toUtf8().constData();
+    std::cout<<"xmlname "<<xmlname_text<<std::endl;
+
+    tinyxml2::XMLDocument xmlDoc;
+    tinyxml2::XMLNode * pColorCriterias = xmlDoc.NewElement("colorCriterias");
+
+    xmlDoc.InsertFirstChild(pColorCriterias);
+    tinyxml2::XMLElement * pMinInterval = xmlDoc.NewElement("minInterval");
+
+    xmlDoc.InsertFirstChild(pMinInterval);
+    tinyxml2::XMLElement * pRed = xmlDoc.NewElement("red");
+    pRed->SetText(0.5f);
+    pColorCriterias->InsertEndChild(pRed);
+
+    pColorCriterias->InsertEndChild(pMinInterval);
+
+    xmlDoc.SaveFile(xmlname_text);
+
+
+
+    /*
     TiXmlDocument doc;
     TiXmlDeclaration * decl = new TiXmlDeclaration("1.0", "", "");
     doc.LinkEndChild( decl );
@@ -375,5 +406,6 @@ void structurateXml( )
 
     // Save xml file
     doc.SaveFile("colorCriterias.xml");
+    */
 }
-*/
+

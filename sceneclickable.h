@@ -23,7 +23,7 @@ public slots:
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     QGraphicsPixmapItem* pixmapitem;
-    void fromOneImageToAnother(QPixmap pixmap1, QPixmap pixmap2);
+    void fromOneImageToAnother();
 
 private:
     float mValeur_H;

@@ -5,6 +5,7 @@
 #include <qgraphicsscene.h>
 #include "sceneclickable.h"
 #include <vector>
+#include <tinyxml2.h>
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +21,7 @@ public:
     bool eventFilter(QObject *obj, QEvent *event);
     std::vector<float> mvectorHSL;
     std::vector<float> mvectorAmpliHSL;
+
 
 private:
     Ui::MainWindow *ui;
