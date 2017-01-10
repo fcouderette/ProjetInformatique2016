@@ -353,15 +353,15 @@ void MainWindow::structurateXml()
     tinyxml2::XMLElement * pMinInterval = xmlDoc.NewElement("minInterval");
 
     tinyxml2::XMLElement * pRedMin = xmlDoc.NewElement("red");
-    pRedMin->SetText(50);
+    pRedMin->SetText(mValeur_R);
     pMinInterval->InsertEndChild(pRedMin);
 
     tinyxml2::XMLElement * pGreenMin = xmlDoc.NewElement("green");
-    pGreenMin->SetText(50);
+    pGreenMin->SetText(mValeur_G);
     pMinInterval->InsertEndChild(pGreenMin);
 
     tinyxml2::XMLElement * pBlueMin = xmlDoc.NewElement("blue");
-    pBlueMin->SetText(50);
+    pBlueMin->SetText(mValeur_B);
     pMinInterval->InsertEndChild(pBlueMin);
 
     pColorCriterias->InsertEndChild(pMinInterval);
