@@ -333,29 +333,59 @@ void MainWindow::writeXmlFile()
 */
 
 
-void structurateXml( )
+void MainWindow::structurateXml()
 {
-
-
-
     QString xmlname = QFileDialog::getSaveFileName(0, QObject::tr("Save color parameters"), "/home", QObject::tr("*.xml"));
-    std::string xmlname_text = xmlname.toUtf8().constData();
-    std::cout<<"xmlname "<<xmlname_text<<std::endl;
+    // Converts QString to string
+    std::string xmlname_text = xmlname.toUtf8().constData(); //(char*)deux.c_str();
+    // Converts string to char
+    char* xmlname_good = (char*)xmlname_text.c_str();
+    std::cout<<"xmlname "<<xmlname_good<<std::endl;
 
+    // Initialises document
     tinyxml2::XMLDocument xmlDoc;
-    tinyxml2::XMLNode * pColorCriterias = xmlDoc.NewElement("colorCriterias");
 
+    // Creates root
+    tinyxml2::XMLNode * pColorCriterias = xmlDoc.NewElement("colorCriterias");
     xmlDoc.InsertFirstChild(pColorCriterias);
+
+
     tinyxml2::XMLElement * pMinInterval = xmlDoc.NewElement("minInterval");
 
-    xmlDoc.InsertFirstChild(pMinInterval);
-    tinyxml2::XMLElement * pRed = xmlDoc.NewElement("red");
-    pRed->SetText(0.5f);
-    pColorCriterias->InsertEndChild(pRed);
+    tinyxml2::XMLElement * pRedMin = xmlDoc.NewElement("red");
+    pRedMin->SetText(50);
+    pMinInterval->InsertEndChild(pRedMin);
+
+    tinyxml2::XMLElement * pGreenMin = xmlDoc.NewElement("green");
+    pGreenMin->SetText(50);
+    pMinInterval->InsertEndChild(pGreenMin);
+
+    tinyxml2::XMLElement * pBlueMin = xmlDoc.NewElement("blue");
+    pBlueMin->SetText(50);
+    pMinInterval->InsertEndChild(pBlueMin);
 
     pColorCriterias->InsertEndChild(pMinInterval);
 
-    xmlDoc.SaveFile(xmlname_text);
+
+    tinyxml2::XMLElement * pMaxInterval = xmlDoc.NewElement("maxInterval");
+
+    tinyxml2::XMLElement * pRedMax = xmlDoc.NewElement("red");
+    pRedMax->SetText(50);
+    pMaxInterval->InsertEndChild(pRedMax);
+
+    tinyxml2::XMLElement * pGreenMax = xmlDoc.NewElement("green");
+    pGreenMax->SetText(50);
+    pMaxInterval->InsertEndChild(pGreenMax);
+
+    tinyxml2::XMLElement * pBlueMax = xmlDoc.NewElement("blue");
+    pBlueMax->SetText(50);
+    pMaxInterval->InsertEndChild(pBlueMax);
+
+    pColorCriterias->InsertEndChild(pMaxInterval);
+
+
+
+    xmlDoc.SaveFile(xmlname_good);
 
 
 

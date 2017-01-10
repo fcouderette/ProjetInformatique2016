@@ -49,7 +49,7 @@ public slots:
     std::vector<float> convertRGBtoTSL(int R,int G,int B);
     void maskDefinedInterval(QImage img);
     void defineSelection(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL);
-    //void writeXmlFile();
+    void structurateXml();
 
 signals:
     void pressLabel();
