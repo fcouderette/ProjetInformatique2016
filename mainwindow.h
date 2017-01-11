@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    bool eventFilter(QObject *obj, QEvent *event);
+    //bool eventFilter(QObject *obj, QEvent *event);
     std::vector<float> mvectorHSL;
     std::vector<float> mvectorAmpliHSL;
 
@@ -50,11 +50,11 @@ public slots:
     void maskDefinedInterval(QImage img);
     void defineSelection(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL);
     void structurateXml();
-
+/*
 signals:
-    void pressLabel();
+    void pressLabel(QColor);
     void changeSelec(std::vector<float>);
-
+*/
 };
 
 #endif // MAINWINDOW_H

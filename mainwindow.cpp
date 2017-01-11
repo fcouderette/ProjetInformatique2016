@@ -44,14 +44,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView_Image->scale(0.4,0.4);
 
     // Get colour
-    QObject::connect(this, SIGNAL(pressLabel()), this , SLOT(getColourOfClickedPixel()));
+    //QObject::connect(this, SIGNAL(pressLabel(QColor)), this , SLOT(getColourOfClickedPixel(QColor)));
 
     // Initialize reference colour
-    QObject::connect(this, SIGNAL(pressLabel()), this , SLOT(setReferenceColor()));
+    //QObject::connect(this, SIGNAL(pressLabel(QColor)), this , SLOT(setReferenceColor(QColor)));
 
-    QObject::connect(ui->horizontalSlider_AT, SIGNAL(valueChanged(int)), this , SLOT(setColorAmplitude()));
-    QObject::connect(ui->horizontalSlider_AS, SIGNAL(valueChanged(int)), this , SLOT(setColorAmplitude()));
-    QObject::connect(ui->horizontalSlider_AL, SIGNAL(valueChanged(int)), this , SLOT(setColorAmplitude()));
+    QObject::connect(ui->horizontalSlider_AT, SIGNAL(sliderReleased()), this , SLOT(setColorAmplitude()));
+    QObject::connect(ui->horizontalSlider_AS, SIGNAL(sliderReleased()), this , SLOT(setColorAmplitude()));
+    QObject::connect(ui->horizontalSlider_AL, SIGNAL(sliderReleased()), this , SLOT(setColorAmplitude()));
 
 
 
@@ -74,7 +74,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
+/*
 //RAS
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
@@ -87,7 +87,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     }
     return QObject::eventFilter(obj,event);
 }
-
+*/
 //RAS
 void MainWindow::chooseImage()
 {
@@ -98,7 +98,7 @@ void MainWindow::chooseImage()
     chemin_image=QFileDialog::getOpenFileName(this,"Select Image", "/home","Images(*.jpg *.png)");
 
     // Associates image to scene
-    mScene.addImage(QPixmap(chemin_image));
+    mScene.addImage(chemin_image);
 }
 
 //RAS
@@ -149,6 +149,7 @@ void MainWindow::setReferenceColor(QColor coul)
 
 
     //mValeur_R=mValeurRef+ui.RedSlider->value();
+    setColorAmplitude();
 }
 
 //RAS
@@ -232,18 +233,18 @@ std::vector<float> MainWindow::setColorAmplitude()
     //std::cout<<"\n*** setColorAmplitude() ***"<<std::endl;
 
     // Put value from slider inside mValeur_AH
-    ui->horizontalSlider_AT->setRange(0, 360-mValeur_H);
+    //ui->horizontalSlider_AT->setRange(0, 360-mValeur_H);
     mValeur_AH=ui->horizontalSlider_AT->value();
-    //std::cout<<"mValeur_AH = "<<mValeur_AH<<std::endl;
+    std::cout<<"mValeur_AH = "<<mValeur_AH<<std::endl;
     //mValeur_R=mValeurRef+ui.RedSlider->value();
 
-    ui->horizontalSlider_AS->setRange(0, 100-mValeur_S);
+    //ui->horizontalSlider_AS->setRange(0, 100-mValeur_S);
     mValeur_AS=ui->horizontalSlider_AS->value();
-    //std::cout<<"mValeur_AS = "<<mValeur_AS<<std::endl;
+    std::cout<<"mValeur_AS = "<<mValeur_AS<<std::endl;
 
-    ui->horizontalSlider_AL->setRange(0, 100-mValeur_L);
+    //ui->horizontalSlider_AL->setRange(0, 100-mValeur_L);
     mValeur_AL=ui->horizontalSlider_AL->value();
-    //std::cout<<"mValeur_AL = "<<mValeur_AL<<std::endl;
+    std::cout<<"mValeur_AL = "<<mValeur_AL<<std::endl;
 
     // Return a vector containing length of selection interval
     mvectorAmpliHSL={mValeur_AH,mValeur_AS,mValeur_AL};
@@ -267,7 +268,64 @@ void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float>
     std::cout<<"bound L = "<<vectorAmpliHSL[2]<<std::endl;
     */
     // Create a vector containing interval of selection bounds
-    std::vector<float> selectionInterval{vectorHSL[0], vectorHSL[0]+vectorAmpliHSL[0], vectorHSL[1], vectorHSL[1]+vectorAmpliHSL[1], vectorHSL[2], vectorHSL[2]+vectorAmpliHSL[2]};
+
+    // Bounds
+    float minHue=vectorHSL[0]-vectorAmpliHSL[0];
+    float maxHue=vectorHSL[0]+vectorAmpliHSL[0];
+
+    float minSat=vectorHSL[1]-vectorAmpliHSL[1];
+    if(minSat<0){minSat=0;}
+    float maxSat=vectorHSL[1]+vectorAmpliHSL[1];
+    if(maxSat>100){maxSat=100;}
+
+    float minLum=vectorHSL[2]-vectorAmpliHSL[2];
+    if(minLum<0){minLum=0;}
+    float maxLum=vectorHSL[2]+vectorAmpliHSL[2];
+    if(maxLum>100){maxLum=100;}
+
+    // Intervals
+    //std::vector<float> selectionIntervalSat{minSat,maxSat};
+    //std::vector<float> selectionIntervalLum{minLum,maxLum};
+
+    if(minHue>=0 && maxHue<=360)
+    {
+        //std::vector<float> selectionIntervalHue1{minHue,maxHue};
+        std::vector<float> selectionInterval{
+                    minHue, maxHue,
+                    minHue, maxHue,
+                    minSat, maxSat,
+                    minLum, maxLum};
+        mScene.maskThings(selectionInterval);
+    }
+    else
+    {
+        if(minHue<0)
+        {
+            //std::vector<float> selectionIntervalHue1{0,maxHue};
+            //std::vector<float> selectionIntervalHue2{360+minHue,360};
+            std::vector<float> selectionInterval{
+                        0, maxHue,
+                        360+minHue, 360,
+                        minSat, maxSat,
+                        minLum, maxLum
+                        };
+            mScene.maskThings(selectionInterval);
+        }
+        else if(maxHue>360)
+        {
+            //std::vector<float> selectionIntervalHue1{minHue,360};
+            //std::vector<float> selectionIntervalHue2{0,maxHue-360};
+            std::vector<float> selectionInterval{
+                        minHue, 360,
+                        0, maxHue-360,
+                        minSat, maxSat,
+                        minLum, maxLum};
+            mScene.maskThings(selectionInterval);
+        }
+    }
+
+
+
 
     /*
     std::cout<<"bound T- = "<<selectionInterval[0]<<std::endl;
@@ -280,7 +338,7 @@ void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float>
     std::cout<<"bound L+ = "<<selectionInterval[5]<<std::endl;
     */
 
-    mScene.maskThings(selectionInterval);
+
 
     //emit changeSelec(selectionInterval);
 

@@ -53,6 +53,81 @@ void SceneClickable::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void SceneClickable::maskThings(std::vector<float> vect)
 {
+    mWorkingPic=mOriginalPic;
+
+    int imageWidth=mWorkingPic.width();
+    //std::cout<<"largeur image="<<imageWidth<<std::endl;
+    int imageHeight=mWorkingPic.height();
+    //std::cout<<"hauteur image="<<imageHeight<<std::endl;
+
+    // Change of color of selected pixel
+    QRgb colorMask=QColor(224,44,224).rgb();
+    //std::cout<<"Got color for mask\n"<<std::endl;
+
+    std::cout<<"bound T- = "<<vect[0]<<std::endl;
+    std::cout<<"bound T+ = "<<vect[1]<<std::endl;
+
+    std::cout<<"bound T- = "<<vect[2]<<std::endl;
+    std::cout<<"bound T+ = "<<vect[3]<<std::endl;
+
+    std::cout<<"bound S- = "<<vect[4]<<std::endl;
+    std::cout<<"bound S+ = "<<vect[5]<<std::endl;
+
+    std::cout<<"bound L- = "<<vect[6]<<std::endl;
+    std::cout<<"bound L+ = "<<vect[7]<<std::endl;
+
+    int compteur=0;
+    for(int iLine=0;iLine<imageWidth;iLine++)
+    {
+        for(int iCol=0;iCol<imageHeight;iCol++)
+        {
+            //std::cout<<"Got in loop"<<std::endl;
+
+            // Gets color of pixel
+            QColor colorPix=mOriginalPic.pixel(iLine,iCol);
+            // Converts color of that pixel
+            std::vector<float> localVect=sceneConvertRGBtoTSL(colorPix.red(),colorPix.green(),colorPix.blue());
+
+            //std::vector<float> localVect={colorPix.hslHue(),colorPix.hslSaturation(),colorPix.lightness()};
+            //std::cout<<colorPix.hslHue()<<std::endl;
+            //std::cout<<"colorPix.h : "<<localVect[0]<<std::endl;
+            //std::cout<<"colorPix.s : "<<localVect[1]<<std::endl;
+            //std::cout<<"colorPix.l : "<<localVect[2]<<"\n"<<std::endl;
+
+            //std::cout<<"Color converted"<<std::endl;
+
+            //std::cout<<"Intervalle : "<<vect[0]<<" ; "<<vect[1]<<std::endl;
+            //std::cout<<"Intervalle : "<<vect[2]<<" ; "<<vect[3]<<std::endl;
+            //std::cout<<"Intervalle : "<<vect[4]<<" ; "<<vect[5]<<"\n"<<std::endl;
+
+            // if hue in [huemin;huemax] and saturation in [saturationmin;saturationmax] and and luminosity in [luminositymin;luminositymax]
+            if     (((localVect[0]>=vect[0] && localVect[0]<=vect[1]) ||
+                    (localVect[0]>=vect[2] && localVect[0]<=vect[3])) &&
+                    localVect[1]>=vect[4] && localVect[1]<=vect[5] &&
+                    localVect[2]>=vect[6] && localVect[2]<=vect[7])
+            {
+                compteur+=1;
+                //std::cout<<"********** HELLO compteur pixels : "<<compteur<<std::endl;
+                // color all of the image for now
+                //temporaryImage.setPixel(iLine,iCol, colorMask);
+
+                //myImage.setPixel(iLine,iCol, colorMask);
+                mWorkingPic.setPixel(iLine,iCol, colorMask);
+            }
+            else
+            {
+                //couleur originale
+                //myImage.setPixel(iLine,iCol, myImage.pixel(iLine,iCol).rgb());
+            }
+        }
+    }
+    // usual return of item in list, error else
+    // Convert image from QImage to QPixmap
+
+    //pixmapitem->setPixmap(QPixmap::fromImage(myImage));
+    pixmapitem->setPixmap(QPixmap::fromImage(mWorkingPic));//necessaire???
+
+    /*
 
     //std::cout<<"Mask"<<std::endl;
 
@@ -140,13 +215,15 @@ void SceneClickable::maskThings(std::vector<float> vect)
 
             return;
         }
-    }
+    }*/
 }
 
 
-void SceneClickable::addImage(QPixmap pixmap)
+void SceneClickable::addImage(QString filename)
 {
-    pixmapitem=addPixmap(pixmap);
+    mOriginalPic=QImage(filename);
+    mWorkingPic=mOriginalPic;
+    pixmapitem=addPixmap(QPixmap::fromImage(mWorkingPic));
 }
 
 void SceneClickable::fromOneImageToAnother()
