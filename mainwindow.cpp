@@ -64,9 +64,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //QObject::connect(this, SIGNAL(changeSelect(std::vector<float>)), &mScene , SLOT(maskThings(std::vector<float>)));
 
     // Show unfiltered image when clicked on "Show Original Image" button
-    QObject::connect(ui->showOriginalImage_checkBox, SIGNAL(stateChanged()), this , SLOT(fromOneImageToAnother(QPixmap pixmap1, QPixmap pixmap2)
-    ));
+    QObject::connect(ui->showOriginalImage_checkBox, SIGNAL(stateChanged(int)), &mScene , SLOT(fromOneImageToAnother(int)));
 
+
+    //RAS
     QObject::connect(ui->pushButton_Export, SIGNAL(clicked()), this , SLOT(structurateXml()));
 }
 
@@ -97,6 +98,7 @@ void MainWindow::chooseImage()
     QString chemin_image;
     chemin_image=QFileDialog::getOpenFileName(this,"Select Image", "/home","Images(*.jpg *.png)");
 
+    mScene.clear();
     // Associates image to scene
     mScene.addImage(chemin_image);
 }

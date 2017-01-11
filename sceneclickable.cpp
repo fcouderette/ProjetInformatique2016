@@ -54,6 +54,7 @@ void SceneClickable::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void SceneClickable::maskThings(std::vector<float> vect)
 {
     mWorkingPic=mOriginalPic;
+    mVect=vect;
 
     int imageWidth=mWorkingPic.width();
     //std::cout<<"largeur image="<<imageWidth<<std::endl;
@@ -76,7 +77,7 @@ void SceneClickable::maskThings(std::vector<float> vect)
     std::cout<<"bound L- = "<<vect[6]<<std::endl;
     std::cout<<"bound L+ = "<<vect[7]<<std::endl;
 
-    int compteur=0;
+    //int compteur=0;
     for(int iLine=0;iLine<imageWidth;iLine++)
     {
         for(int iCol=0;iCol<imageHeight;iCol++)
@@ -106,7 +107,7 @@ void SceneClickable::maskThings(std::vector<float> vect)
                     localVect[1]>=vect[4] && localVect[1]<=vect[5] &&
                     localVect[2]>=vect[6] && localVect[2]<=vect[7])
             {
-                compteur+=1;
+                //compteur+=1;
                 //std::cout<<"********** HELLO compteur pixels : "<<compteur<<std::endl;
                 // color all of the image for now
                 //temporaryImage.setPixel(iLine,iCol, colorMask);
@@ -226,8 +227,27 @@ void SceneClickable::addImage(QString filename)
     pixmapitem=addPixmap(QPixmap::fromImage(mWorkingPic));
 }
 
-void SceneClickable::fromOneImageToAnother()
+void SceneClickable::fromOneImageToAnother(int stateofbox)
 {
+
+
+    // If checkbox is unenabled
+    if(stateofbox==Qt::Unchecked)
+    {
+        std::cout<<"state 1"<<std::endl;
+        maskThings(mVect);
+    }
+    // If checkbox is enabled
+    else if(stateofbox==Qt::Checked)
+    {
+        std::cout<<"state 0"<<std::endl;
+        mWorkingPic=mOriginalPic;
+        pixmapitem->setPixmap(QPixmap::fromImage(mWorkingPic));
+    }
+
+
+
+
 /*
     QList<QGraphicsItem *> listeItems=QGraphicsScene::items();
         if (listeItems.size()==2)

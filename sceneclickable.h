@@ -18,6 +18,8 @@ signals:
     void colorSelected(QColor);
 public slots:
     void maskThings(std::vector<float> vect);
+    void fromOneImageToAnother(int stateofbox);
+
 
 
 protected:
@@ -25,12 +27,12 @@ protected:
     QImage mOriginalPic;
     QImage mWorkingPic;
     QGraphicsPixmapItem* pixmapitem;
-    void fromOneImageToAnother();
 
 private:
     float mValeur_H;
     float mValeur_S;
     float mValeur_L;
+    std::vector<float> mVect;
 
 };
 
