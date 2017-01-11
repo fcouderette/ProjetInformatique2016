@@ -69,6 +69,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //RAS
     QObject::connect(ui->pushButton_Export, SIGNAL(clicked()), this , SLOT(structurateXml()));
+
+    QObject::connect(ui->pushButton_xml, SIGNAL(clicked()), this , SLOT(chooseXml()));
+    QObject::connect(ui->pushButton_ply, SIGNAL(clicked()), this , SLOT(choosePly()));
 }
 
 MainWindow::~MainWindow()
@@ -499,3 +502,21 @@ void MainWindow::structurateXml()
     */
 }
 
+void MainWindow::chooseXml()
+{
+    // Gets back the image's path
+    QString xmlpath;
+    xmlpath=QFileDialog::getOpenFileName(this,QObject::tr("Select xml file"), "/home",QObject::tr("XML files (*.xml)"));
+
+    ui->xml_label->setText(xmlpath);
+}
+
+
+void MainWindow::choosePly()
+{
+    // Gets back the image's path
+    QString plypath;
+    plypath=QFileDialog::getOpenFileName(this,QObject::tr("Select ply file"), "/home",QObject::tr("XML files (*.ply)"));
+
+    ui->ply_label->setText(plypath);
+}

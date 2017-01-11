@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -471,7 +471,7 @@
        <string>Segment</string>
       </property>
      </widget>
-     <widget class="QTextEdit" name="textEdit">
+     <widget class="QLabel" name="xml_label">
       <property name="geometry">
        <rect>
         <x>30</x>
@@ -480,8 +480,14 @@
         <height>31</height>
        </rect>
       </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
      </widget>
-     <widget class="QTextEdit" name="textEdit_2">
+     <widget class="QLabel" name="ply_label">
       <property name="geometry">
        <rect>
         <x>30</x>
@@ -489,6 +495,12 @@
         <width>621</width>
         <height>31</height>
        </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </widget>

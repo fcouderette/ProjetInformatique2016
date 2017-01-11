@@ -44,6 +44,8 @@ private:
 
 public slots:
     void chooseImage();
+    void chooseXml();
+    void choosePly();
     void setReferenceColor(QColor coul);
     std::vector<float> setColorAmplitude();
     std::vector<float> convertRGBtoTSL(int R,int G,int B);
