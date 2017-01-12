@@ -29,7 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     mValeur_AS(0),
     mValeur_AL(0),
     mvectorHSL({0,0,0}),
-    mvectorAmpliHSL({0,0,0})
+    mvectorAmpliHSL({0,0,0}),
+    mselectionInterval({0,0,0,0,0,0,0,0})
 {
     ui->setupUi(this);
     ui->graphicsView_Image->installEventFilter(this);
@@ -117,17 +118,6 @@ void MainWindow::setReferenceColor(QColor coul)
     mValeur_G=coul.green();
     mValeur_B=coul.blue();
 
-    /*
-    mValeur_H=coul.hslHue();
-    mValeur_S=coul.hslSaturation();
-    mValeur_L=coul.lightness();
-    std::cout<<"coul teinte : "<<mValeur_H<<std::endl;
-    std::cout<<"coul saturation : "<<mValeur_S<<std::endl;
-    std::cout<<"coul luminosite : "<<mValeur_L<<std::endl;
-    ui->text_value_H->setText(QString("%1").arg(mValeur_H));
-    ui->text_value_S->setText(QString("%1").arg(mValeur_S));
-    ui->text_value_L->setText(QString("%1").arg(mValeur_L));
-    */
 
     // Set new values for RGB (default : (0,0,0))
     ui->text_value_R->setText(QString("%1").arg(mValeur_R));//.toStdString());
@@ -329,6 +319,73 @@ void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float>
         }
     }
 
+    mselectionInterval=defineSelection2(vectorHSL,vectorAmpliHSL);
+}
+
+std::vector<float> MainWindow::defineSelection2(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL)
+    {
+        /*
+        std::cout<<"\n*** defineSelection() ***"<<std::endl;
+        std::cout<<"bound T = "<<vectorAmpliHSL[0]<<std::endl;
+        std::cout<<"bound S = "<<vectorAmpliHSL[1]<<std::endl;
+        std::cout<<"bound L = "<<vectorAmpliHSL[2]<<std::endl;
+        */
+        // Create a vector containing interval of selection bounds
+
+        // Bounds
+        float minHue=vectorHSL[0]-vectorAmpliHSL[0];
+        float maxHue=vectorHSL[0]+vectorAmpliHSL[0];
+
+        float minSat=vectorHSL[1]-vectorAmpliHSL[1];
+        if(minSat<0){minSat=0;}
+        float maxSat=vectorHSL[1]+vectorAmpliHSL[1];
+        if(maxSat>100){maxSat=100;}
+
+        float minLum=vectorHSL[2]-vectorAmpliHSL[2];
+        if(minLum<0){minLum=0;}
+        float maxLum=vectorHSL[2]+vectorAmpliHSL[2];
+        if(maxLum>100){maxLum=100;}
+
+        // Intervals
+        //std::vector<float> selectionIntervalSat{minSat,maxSat};
+        //std::vector<float> selectionIntervalLum{minLum,maxLum};
+
+        if(minHue>=0 && maxHue<=360)
+        {
+            //std::vector<float> selectionIntervalHue1{minHue,maxHue};
+            std::vector<float> selectionInterval{
+                        minHue, maxHue,
+                        minHue, maxHue,
+                        minSat, maxSat,
+                        minLum, maxLum};
+            return selectionInterval;
+        }
+        else
+        {
+            if(minHue<0)
+            {
+                //std::vector<float> selectionIntervalHue1{0,maxHue};
+                //std::vector<float> selectionIntervalHue2{360+minHue,360};
+                std::vector<float> selectionInterval{
+                            0, maxHue,
+                            360+minHue, 360,
+                            minSat, maxSat,
+                            minLum, maxLum
+                            };
+                return selectionInterval;
+            }
+            else if(maxHue>360)
+            {
+                //std::vector<float> selectionIntervalHue1{minHue,360};
+                //std::vector<float> selectionIntervalHue2{0,maxHue-360};
+                std::vector<float> selectionInterval{
+                            minHue, 360,
+                            0, maxHue-360,
+                            minSat, maxSat,
+                            minLum, maxLum};
+                return selectionInterval;
+            }
+        }
 
 
 
@@ -357,47 +414,15 @@ void MainWindow::maskDefinedInterval(QImage img)
 {
     mScene.addPixmap(QPixmap::fromImage(img));
 
-    // useless :
-    /*
-    // pour tout pixel de l'image
-    //for (int x=0, x<XX, x++)
-    //{for(int y=0, y<YY,y++){
-        // on convertit rvb en tsl :
-        //convertRGBtoTSL(int R,int G,int B);
-        //si tsl_pixel est dans l'intervalle defini
-        //if img.at(x,y){
-            //on passe le pixel en rose
-            //QImage::setPixelColor(x,y,couleurRose);
-        //}}}
-    //pbs : comment considerer une etendue de pixels avec Qt ? comment parcourir les pixels ?
-    */
+
 }
 
-/*
-void MainWindow::writeXmlFile()
-{
-    // Decide of file's path
-    QString filepath="/home/frederique/Bureau/colorParameters.xml";
-    filepath=QFileDialog::getSaveFileName(this, tr("Save File"), filepath, tr("XML files (*.xml)"));
 
-    // Declaration and opening of file
-    ofstream myFile("filepath", ios::out | ios::trunc);
-    // If opening of file is a success
-    if(myFile)
-    {
-
-        // File is closed
-        myFile.close();
-    }
-    else
-        cerr << "Error when opening the file" << endl;
-    return 0;
-}
-*/
 
 
 void MainWindow::structurateXml()
 {
+
     QString xmlname = QFileDialog::getSaveFileName(0, QObject::tr("Save color parameters"), "/home", QObject::tr("*.xml"));
     // Converts QString to string
     std::string xmlname_text = xmlname.toUtf8().constData(); //(char*)deux.c_str();
@@ -415,16 +440,20 @@ void MainWindow::structurateXml()
 
     tinyxml2::XMLElement * pMinInterval = xmlDoc.NewElement("minInterval");
 
-    tinyxml2::XMLElement * pRedMin = xmlDoc.NewElement("red");
-    pRedMin->SetText(mValeur_R);
-    pMinInterval->InsertEndChild(pRedMin);
+    tinyxml2::XMLElement * pRedMin1 = xmlDoc.NewElement("red1");
+    pRedMin1->SetText(mselectionInterval[0]);
+    pMinInterval->InsertEndChild(pRedMin1);
+
+    tinyxml2::XMLElement * pRedMin2 = xmlDoc.NewElement("red2");
+    pRedMin2->SetText(mselectionInterval[2]);
+    pMinInterval->InsertEndChild(pRedMin2);
 
     tinyxml2::XMLElement * pGreenMin = xmlDoc.NewElement("green");
-    pGreenMin->SetText(mValeur_G);
+    pGreenMin->SetText(mselectionInterval[4]);
     pMinInterval->InsertEndChild(pGreenMin);
 
     tinyxml2::XMLElement * pBlueMin = xmlDoc.NewElement("blue");
-    pBlueMin->SetText(mValeur_B);
+    pBlueMin->SetText(mselectionInterval[6]);
     pMinInterval->InsertEndChild(pBlueMin);
 
     pColorCriterias->InsertEndChild(pMinInterval);
@@ -432,16 +461,20 @@ void MainWindow::structurateXml()
 
     tinyxml2::XMLElement * pMaxInterval = xmlDoc.NewElement("maxInterval");
 
-    tinyxml2::XMLElement * pRedMax = xmlDoc.NewElement("red");
-    pRedMax->SetText(50);
-    pMaxInterval->InsertEndChild(pRedMax);
+    tinyxml2::XMLElement * pRedMax1 = xmlDoc.NewElement("red1");
+    pRedMax1->SetText(mselectionInterval[1]);
+    pMaxInterval->InsertEndChild(pRedMax1);
+
+    tinyxml2::XMLElement * pRedMax2 = xmlDoc.NewElement("red2");
+    pRedMax2->SetText(mselectionInterval[3]);
+    pMaxInterval->InsertEndChild(pRedMax2);
 
     tinyxml2::XMLElement * pGreenMax = xmlDoc.NewElement("green");
-    pGreenMax->SetText(50);
+    pGreenMax->SetText(mselectionInterval[5]);
     pMaxInterval->InsertEndChild(pGreenMax);
 
     tinyxml2::XMLElement * pBlueMax = xmlDoc.NewElement("blue");
-    pBlueMax->SetText(50);
+    pBlueMax->SetText(mselectionInterval[7]);
     pMaxInterval->InsertEndChild(pBlueMax);
 
     pColorCriterias->InsertEndChild(pMaxInterval);
@@ -450,56 +483,6 @@ void MainWindow::structurateXml()
 
     xmlDoc.SaveFile(xmlname_good);
 
-
-
-    /*
-    TiXmlDocument doc;
-    TiXmlDeclaration * decl = new TiXmlDeclaration("1.0", "", "");
-    doc.LinkEndChild( decl );
-
-    TiXmlElement * colorCriterias = new TiXmlElement( "colorCriterias" );
-
-
-    TiXmlElement * minInterval = new TiXmlElement("minInterval");
-
-    red = new TiXmlElement("red");
-    red->LinkEndChild(new TiXmlText(mValeur_R));
-    red->LinkEndChild(red);
-
-    green = new TiXmlElement("green");
-    green->LinkEndChild(new TiXmlText( mValeur_G));
-    green->LinkEndChild(green);
-
-    blue = new TiXmlElement("blue");
-    blue->LinkEndChild(new TiXmlText( mValeur_B));
-    blue->LinkEndChild(blue);
-
-    colorCriterias->LinkEndChild(minInterval);
-
-    // For end of coor interval
-    TiXmlElement * maxInterval = new TiXmlElement("maxInterval");
-
-    red = new TiXmlElement("red");
-    red->LinkEndChild(new TiXmlText(// fin intervalle converti en rgb));
-    red->LinkEndChild(red);
-
-    green = new TiXmlElement("green");
-    green->LinkEndChild(new TiXmlText(// fin intervalle converti en rgb));
-    green->LinkEndChild(green);
-
-    blue = new TiXmlElement("blue");
-    blue->LinkEndChild(new TiXmlText(// fin intervalle converti en rgb));
-    blue->LinkEndChild(blue);
-
-    // Close maxInterval
-    colorCriterias->LinkEndChild(maxInterval);
-
-    // Close colorCriterias
-    doc.LinkEndChild(colorCriterias);
-
-    // Save xml file
-    doc.SaveFile("colorCriterias.xml");
-    */
 }
 
 void MainWindow::chooseXml()
