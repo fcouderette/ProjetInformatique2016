@@ -40,6 +40,16 @@ private:
     float mValeur_AL;
     std::vector<float> mselectionInterval;
 
+    float mredmin1;
+    float mredmin2;
+    float mgreenmin;
+    float mbluemin;
+
+    float mredmax1;
+    float mredmax2;
+    float mgreenmax;
+    float mbluemax;
+
 
 
 

@@ -31,7 +31,15 @@ MainWindow::MainWindow(QWidget *parent) :
     mValeur_AL(0),
     mvectorHSL({0,0,0}),
     mvectorAmpliHSL({0,0,0}),
-    mselectionInterval({0,0,0,0,0,0,0,0})
+    mselectionInterval({0,0,0,0,0,0,0,0}),
+    mredmin1(0),
+    mredmin2(0),
+    mgreenmin(0),
+    mbluemin(0),
+    mredmax1(0),
+    mredmax2(0),
+    mgreenmax(0),
+    mbluemax(0)
 {
     ui->setupUi(this);
     ui->graphicsView_Image->installEventFilter(this);
@@ -323,6 +331,7 @@ void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float>
     mselectionInterval=defineSelection2(vectorHSL,vectorAmpliHSL);
 }
 
+//RAS
 std::vector<float> MainWindow::defineSelection2(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL)
     {
         /*
@@ -410,7 +419,7 @@ std::vector<float> MainWindow::defineSelection2(std::vector<float> vectorHSL,std
 }
 
 
-
+//RAS
 void MainWindow::maskDefinedInterval(QImage img)
 {
     mScene.addPixmap(QPixmap::fromImage(img));
@@ -420,7 +429,7 @@ void MainWindow::maskDefinedInterval(QImage img)
 
 
 
-
+//
 void MainWindow::structurateXml()
 {
 
@@ -502,31 +511,16 @@ void MainWindow::chooseXml()
 
     ui->xml_label->setText(xmlpath);
 
+
     // Parses xml
     tinyxml2::XMLDocument xmlDoc;
-    //xmlDoc.LoadFile((char*)(xmlpath.toUtf8().constData()).c_str());
-    //if (eResult != tinyxml2::XML_SUCCESS) return false;
 
-    //tinyxml2::XMLError eResult = xmlDoc.LoadFile((char*)(xmlpath.toUtf8().constData()).c_str());
-    //xmlpath2=xmlpath.toUtf8().constData();
     xmlDoc.LoadFile(xmlpath.toUtf8().constData());
 
     tinyxml2::XMLNode* proot = xmlDoc.FirstChildElement("colorCriterias");
 
     tinyxml2::XMLElement* pminInterval = proot->FirstChildElement("minInterval");
 
-
-    /*
-    //tinyxml2::XMLElement* pred1 = pminInterval->FirstChildElement("red1");
-    //tinyxml2::XMLElement * ChildElmt = pred1->ToElement();
-    //std::string strTagName = pred1 ->Name();
-    //std::string strAttr = pred1 ->Attribute(strTagName);
-    //std::cout<<"valeur xml : "<<strAttr<<std::endl;
-    //std::string msg = ChildElmt;
-    //std::cout<<"ChildElmt : "<<ChildElmt<<std::endl;
-
-    //ChildNode = SiblingNode ->FirstChild();
-    */
 
     // Inferior bound
     tinyxml2::XMLElement* pminred1 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "red1" );
@@ -563,11 +557,28 @@ void MainWindow::chooseXml()
     const char* pmaxblue_value = pmaxblue->GetText();
     std::cout<<"pmaxblue_value : "<<pmaxblue_value<<std::endl;
 
+    char* pEnd;
+    mredmin1 = std::strtof(pminred1_value, &pEnd);
+    mredmin2 = std::strtof(pminred2_value, &pEnd);
+    mgreenmin = std::strtof(pmingreen_value, &pEnd);
+    mbluemin = std::strtof(pminblue_value, &pEnd);
 
-    /*
-    //tinyxml2::XMLText* textNode = titleElement->FirstChild()->ToText();
-    //title = textNode->Value();
-    */
+    mredmax1 = std::strtof(pmaxred1_value, &pEnd);
+    mredmax2 = std::strtof(pmaxred2_value, &pEnd);
+    mgreenmax = std::strtof(pmaxgreen_value, &pEnd);
+    mbluemax = std::strtof(pmaxblue_value, &pEnd);
+
+    std::cout<<"\npminred1_float : "<<mredmin1<<std::endl;
+    std::cout<<"pminred2_float : "<<mredmin2<<std::endl;
+    std::cout<<"pmingreen_float : "<<mgreenmin<<std::endl;
+    std::cout<<"pminblue_float : "<<mbluemin<<std::endl;
+
+    std::cout<<"\npmaxred1_float : "<<mredmax1<<std::endl;
+    std::cout<<"pmaxred2_float : "<<mredmax2<<std::endl;
+    std::cout<<"pmaxgreen_float : "<<mgreenmax<<std::endl;
+    std::cout<<"pmaxblue_float : "<<mbluemax<<std::endl;
+
+
 }
 
 
