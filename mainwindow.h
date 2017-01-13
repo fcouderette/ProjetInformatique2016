@@ -50,6 +50,8 @@ private:
     float mgreenmax;
     float mbluemax;
 
+    QString mplypath;
+
 
 
 

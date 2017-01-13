@@ -9,6 +9,8 @@
 #include <math.h>
 #include <tinyxml2.h>
 #define TIXML_USE_STL
+#include<rply.h>
+#include<rplyfile.h>
 
 
 #include <QMouseEvent>
@@ -584,11 +586,20 @@ void MainWindow::chooseXml()
 }
 
 
+
+
+
 void MainWindow::choosePly()
 {
     // Gets back the image's path
-    QString plypath;
-    plypath=QFileDialog::getOpenFileName(this,QObject::tr("Select ply file"), "/home",QObject::tr("XML files (*.ply)"));
 
-    ui->ply_label->setText(plypath);
+    mplypath=QFileDialog::getOpenFileName(this,QObject::tr("Select ply file"), "/home",QObject::tr("XML files (*.ply)"));
+
+    ui->ply_label->setText(mplypath);
+
+    p_ply myply=ply_open(mplypath.toUtf8().constData(),NULL, 0, NULL);
+    //p_ply ply_open(const char *name, p_ply_error_cb error_cb, long idata, void *pdata);
+
+    std::cout<<"Ply read correctly"<<std::endl;
+
 }
