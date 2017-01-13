@@ -17,7 +17,7 @@ CONFIG += console c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    sceneclickable.cpp
+    sceneclickable.cpp 
 
 HEADERS  += mainwindow.h \
     sceneclickable.h

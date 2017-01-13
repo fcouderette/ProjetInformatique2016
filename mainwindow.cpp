@@ -8,6 +8,7 @@
 #include <QString>
 #include <math.h>
 #include <tinyxml2.h>
+#define TIXML_USE_STL
 
 
 #include <QMouseEvent>
@@ -433,6 +434,12 @@ void MainWindow::structurateXml()
     // Initialises document
     tinyxml2::XMLDocument xmlDoc;
 
+    // Creates declaration
+    tinyxml2::XMLDeclaration * decl = xmlDoc.NewDeclaration();
+    xmlDoc.InsertFirstChild(decl);
+    xmlDoc.InsertEndChild(decl);
+
+
     // Creates root
     tinyxml2::XMLNode * pColorCriterias = xmlDoc.NewElement("colorCriterias");
     xmlDoc.InsertFirstChild(pColorCriterias);
@@ -481,17 +488,86 @@ void MainWindow::structurateXml()
 
 
 
+
     xmlDoc.SaveFile(xmlname_good);
 
 }
 
 void MainWindow::chooseXml()
 {
+
     // Gets back the image's path
     QString xmlpath;
     xmlpath=QFileDialog::getOpenFileName(this,QObject::tr("Select xml file"), "/home",QObject::tr("XML files (*.xml)"));
 
     ui->xml_label->setText(xmlpath);
+
+    // Parses xml
+    tinyxml2::XMLDocument xmlDoc;
+    //xmlDoc.LoadFile((char*)(xmlpath.toUtf8().constData()).c_str());
+    //if (eResult != tinyxml2::XML_SUCCESS) return false;
+
+    //tinyxml2::XMLError eResult = xmlDoc.LoadFile((char*)(xmlpath.toUtf8().constData()).c_str());
+    //xmlpath2=xmlpath.toUtf8().constData();
+    xmlDoc.LoadFile(xmlpath.toUtf8().constData());
+
+    tinyxml2::XMLNode* proot = xmlDoc.FirstChildElement("colorCriterias");
+
+    tinyxml2::XMLElement* pminInterval = proot->FirstChildElement("minInterval");
+
+
+    /*
+    //tinyxml2::XMLElement* pred1 = pminInterval->FirstChildElement("red1");
+    //tinyxml2::XMLElement * ChildElmt = pred1->ToElement();
+    //std::string strTagName = pred1 ->Name();
+    //std::string strAttr = pred1 ->Attribute(strTagName);
+    //std::cout<<"valeur xml : "<<strAttr<<std::endl;
+    //std::string msg = ChildElmt;
+    //std::cout<<"ChildElmt : "<<ChildElmt<<std::endl;
+
+    //ChildNode = SiblingNode ->FirstChild();
+    */
+
+    // Inferior bound
+    tinyxml2::XMLElement* pminred1 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "red1" );
+    const char* pminred1_value = pminred1->GetText();
+    std::cout<<"\npred1_value : "<<pminred1_value<<std::endl;
+
+    tinyxml2::XMLElement* pminred2 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "red2" );
+    const char* pminred2_value = pminred2->GetText();
+    std::cout<<"pred2_value : "<<pminred2_value<<std::endl;
+
+    tinyxml2::XMLElement* pmingreen = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "green" );
+    const char* pmingreen_value = pmingreen->GetText();
+    std::cout<<"pmingreen_value : "<<pmingreen_value<<std::endl;
+
+    tinyxml2::XMLElement* pminblue = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "blue" );
+    const char* pminblue_value = pminblue->GetText();
+    std::cout<<"pminblue_value : "<<pminblue_value<<std::endl;
+
+
+    // Inferior bound
+    tinyxml2::XMLElement* pmaxred1 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "red1" );
+    const char* pmaxred1_value = pmaxred1->GetText();
+    std::cout<<"\npmaxred1_value : "<<pmaxred1_value<<std::endl;
+
+    tinyxml2::XMLElement* pmaxred2 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "red2" );
+    const char* pmaxred2_value = pmaxred2->GetText();
+    std::cout<<"pmaxred2_value : "<<pmaxred2_value<<std::endl;
+
+    tinyxml2::XMLElement* pmaxgreen = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "green" );
+    const char* pmaxgreen_value = pmaxgreen->GetText();
+    std::cout<<"pmaxgreen_value : "<<pmaxgreen_value<<std::endl;
+
+    tinyxml2::XMLElement* pmaxblue = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "blue" );
+    const char* pmaxblue_value = pmaxblue->GetText();
+    std::cout<<"pmaxblue_value : "<<pmaxblue_value<<std::endl;
+
+
+    /*
+    //tinyxml2::XMLText* textNode = titleElement->FirstChild()->ToText();
+    //title = textNode->Value();
+    */
 }
 
 
