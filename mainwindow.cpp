@@ -429,7 +429,7 @@ void MainWindow::maskDefinedInterval(QImage img)
 
 
 
-//
+//RAS
 void MainWindow::structurateXml()
 {
 
@@ -502,6 +502,8 @@ void MainWindow::structurateXml()
 
 }
 
+
+//RAS
 void MainWindow::chooseXml()
 {
 
