@@ -84,6 +84,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(ui->pushButton_xml, SIGNAL(clicked()), this , SLOT(chooseXml()));
     QObject::connect(ui->pushButton_ply, SIGNAL(clicked()), this , SLOT(choosePly()));
+
+    QObject::connect(ui->segment_pushButton, SIGNAL(clicked()), this , SLOT(filterPly()));
 }
 
 MainWindow::~MainWindow()
@@ -420,7 +422,6 @@ std::vector<float> MainWindow::defineSelection2(std::vector<float> vectorHSL,std
 
 }
 
-
 //RAS
 void MainWindow::maskDefinedInterval(QImage img)
 {
@@ -428,8 +429,6 @@ void MainWindow::maskDefinedInterval(QImage img)
 
 
 }
-
-
 
 //RAS
 void MainWindow::structurateXml()
@@ -585,10 +584,7 @@ void MainWindow::chooseXml()
 
 }
 
-
-
-
-
+//RAS
 void MainWindow::choosePly()
 {
     // Gets back the image's path
@@ -597,9 +593,56 @@ void MainWindow::choosePly()
 
     ui->ply_label->setText(mplypath);
 
+}
+
+
+static int vertex_cb(p_ply_argument argument)
+{
+    long eol;
+    ply_get_argument_user_data(argument, NULL, &eol);
+    printf("%g", ply_get_argument_value(argument));
+    if (eol) printf("\n");
+    else printf(" ");
+    return 1;
+}
+
+static int face_cb(p_ply_argument argument) {
+    long length, value_index;
+    ply_get_argument_property(argument, NULL, &length, &value_index);
+    switch (value_index) {
+        case 0:
+        case 1:
+            printf("%g ", ply_get_argument_value(argument));
+            break;
+        case 2:
+            printf("%g\n", ply_get_argument_value(argument));
+            break;
+        default:
+            break;
+    }
+    return 1;
+}
+
+
+void MainWindow::filterPly()
+{
+    std::cout<<"\n Enter filterPly"<<std::endl;
+
+    // Opens ply file
     p_ply myply=ply_open(mplypath.toUtf8().constData(),NULL, 0, NULL);
-    //p_ply ply_open(const char *name, p_ply_error_cb error_cb, long idata, void *pdata);
 
-    std::cout<<"Ply read correctly"<<std::endl;
+    // Reads header
+    int res=ply_read_header(myply);
 
+    // Returns number of vertices
+    long resread=ply_set_read_cb(myply, "vertex", "x", vertex_cb, NULL, 0);
+    printf("Number of vertices : %ld\n", resread);
+
+    // Returns value of argument
+    int reres=ply_get_argument_property("vertex", "x", resread, 12);
+    std::cout<<"ply_get_argument_property() ended"<<reres<<std::endl;
+    //double value=ply_get_argument_value("x");
+
+    ply_close(myply);
+    std::cout<<"filterPly() ended"<<std::endl;
 }

@@ -6,6 +6,8 @@
 #include "sceneclickable.h"
 #include <vector>
 #include <tinyxml2.h>
+#include<rply.h>
+#include<rplyfile.h>
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +23,8 @@ public:
     //bool eventFilter(QObject *obj, QEvent *event);
     std::vector<float> mvectorHSL;
     std::vector<float> mvectorAmpliHSL;
+
+
 
 
 private:
@@ -56,6 +60,7 @@ private:
 
 
 
+
 public slots:
     void chooseImage();
     void chooseXml();
@@ -67,6 +72,7 @@ public slots:
     void defineSelection(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL);
     std::vector<float> defineSelection2(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL);
     void structurateXml();
+    void filterPly();
 /*
 signals:
     void pressLabel(QColor);

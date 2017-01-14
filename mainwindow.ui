@@ -458,7 +458,7 @@
        <string>Select ply file</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="segment_pushButton">
       <property name="geometry">
        <rect>
         <x>720</x>
