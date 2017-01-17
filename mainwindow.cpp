@@ -318,12 +318,6 @@ void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float>
 //RAS
 std::vector<float> MainWindow::defineSelection2(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL)
     {
-        /*
-        std::cout<<"\n*** defineSelection() ***"<<std::endl;
-        std::cout<<"bound T = "<<vectorAmpliHSL[0]<<std::endl;
-        std::cout<<"bound S = "<<vectorAmpliHSL[1]<<std::endl;
-        std::cout<<"bound L = "<<vectorAmpliHSL[2]<<std::endl;
-        */
         // Create a vector containing interval of selection bounds
 
         // Bounds
@@ -341,12 +335,8 @@ std::vector<float> MainWindow::defineSelection2(std::vector<float> vectorHSL,std
         if(maxLum>100){maxLum=100;}
 
         // Intervals
-        //std::vector<float> selectionIntervalSat{minSat,maxSat};
-        //std::vector<float> selectionIntervalLum{minLum,maxLum};
-
         if(minHue>=0 && maxHue<=360)
         {
-            //std::vector<float> selectionIntervalHue1{minHue,maxHue};
             std::vector<float> selectionInterval{
                         minHue, maxHue,
                         minHue, maxHue,
@@ -358,8 +348,6 @@ std::vector<float> MainWindow::defineSelection2(std::vector<float> vectorHSL,std
         {
             if(minHue<0)
             {
-                //std::vector<float> selectionIntervalHue1{0,maxHue};
-                //std::vector<float> selectionIntervalHue2{360+minHue,360};
                 std::vector<float> selectionInterval{
                             0, maxHue,
                             360+minHue, 360,
@@ -370,8 +358,6 @@ std::vector<float> MainWindow::defineSelection2(std::vector<float> vectorHSL,std
             }
             else if(maxHue>360)
             {
-                //std::vector<float> selectionIntervalHue1{minHue,360};
-                //std::vector<float> selectionIntervalHue2{0,maxHue-360};
                 std::vector<float> selectionInterval{
                             minHue, 360,
                             0, maxHue-360,
@@ -380,41 +366,19 @@ std::vector<float> MainWindow::defineSelection2(std::vector<float> vectorHSL,std
                 return selectionInterval;
             }
         }
-
-
-
-    /*
-    std::cout<<"bound T- = "<<selectionInterval[0]<<std::endl;
-    std::cout<<"bound T+ = "<<selectionInterval[1]<<std::endl;
-
-    std::cout<<"bound S- = "<<selectionInterval[2]<<std::endl;
-    std::cout<<"bound S+ = "<<selectionInterval[3]<<std::endl;
-
-    std::cout<<"bound L- = "<<selectionInterval[4]<<std::endl;
-    std::cout<<"bound L+ = "<<selectionInterval[5]<<std::endl;
-    */
-
-
-
-    //emit changeSelec(selectionInterval);
-
-    // maskDefinedInterval
-
 }
 
 //RAS
 void MainWindow::maskDefinedInterval(QImage img)
 {
     mScene.addPixmap(QPixmap::fromImage(img));
-
-
 }
 
 //RAS
 void MainWindow::structurateXml()
 {
-
-    QString xmlname = QFileDialog::getSaveFileName(0, QObject::tr("Save color parameters"), "/home", QObject::tr("*.xml"));
+    QString xmlname = QFileDialog::getSaveFileName(0, QObject::tr("Save color parameters"), "/home",
+                                                   QObject::tr("*.xml"));
     // Converts QString to string
     std::string xmlname_text = xmlname.toUtf8().constData(); //(char*)deux.c_str();
     // Converts string to char
@@ -487,10 +451,10 @@ void MainWindow::structurateXml()
 //RAS
 void MainWindow::chooseXml()
 {
-
     // Gets back the image's path
     QString xmlpath;
-    xmlpath=QFileDialog::getOpenFileName(this,QObject::tr("Select xml file"), "/home",QObject::tr("XML files (*.xml)"));
+    xmlpath=QFileDialog::getOpenFileName(this,QObject::tr("Select xml file"), "/home",
+                                         QObject::tr("XML files (*.xml)"));
 
     ui->xml_label->setText(xmlpath);
 
@@ -604,6 +568,7 @@ static int face_cb(p_ply_argument argument) {
 }
 
 
+/*
 void MainWindow::filterPly()
 {
     QString filtered = QFileDialog::getSaveFileName(0, QObject::tr("Save filtered ply"), "/home", QObject::tr("*.ply"));
@@ -635,6 +600,14 @@ void MainWindow::filterPly()
         long nbVertices=ply_set_read_cb(myply, "vertex", "x", vertex_cb, NULL, 0);
         printf("Number of vertices : %ld\n", nbVertices);
 
+        std::string useless;
+        for(int i=0;i<14;i++)
+        {
+            getline(myply,useless);
+            std::cout<<useless<<std::endl;
+        }
+
+
         // comment ne pas lire le header ?
         //myply.seek[g | p](??, ios::cur);
 
@@ -650,7 +623,7 @@ void MainWindow::filterPly()
             //std::cout<<"ply_get_element_info() ended"<<reres<<std::endl;
             //double value=ply_get_argument_value("x");
 
-/*
+
             // check if rvb->tsl is in interval (members values)
             std::vector<float> vect=convertRGBtoTSL( R, G, B);
             if(vect[0]<mhuemax1 & vect[0]<mhuemax2 & vect[0]>mhuemin1 & vect[0]>mhuemin2 & vect[1]<msatmax &
@@ -679,7 +652,7 @@ void MainWindow::filterPly()
 
             //get next element...
 
-*/
+
         }
 
 
@@ -693,4 +666,65 @@ void MainWindow::filterPly()
 
     ply_close(myply);
     std::cout<<"filterPly() ended"<<std::endl;
-}
+}//filterPly
+*/
+
+void MainWindow::filterPly()
+{
+    QString filtered = QFileDialog::getSaveFileName(0, QObject::tr("Save filtered ply"), "/home", QObject::tr("*.ply"));
+    std::string filtered_text = filtered.toUtf8().constData(); //(char*)deux.c_str();
+    char* filtered_good = (char*)filtered_text.c_str();
+
+    QString remaining = QFileDialog::getSaveFileName(0, QObject::tr("Save remaining ply"), "/home", QObject::tr("*.ply"));
+    std::string remaining_text = remaining.toUtf8().constData(); //(char*)deux.c_str();
+    char* remaining_good = (char*)remaining_text.c_str();
+
+    // Opens ply file
+    p_ply myply=ply_open(mplypath.toUtf8().constData(),NULL, 0, NULL);
+
+    // Reads header
+    int res=ply_read_header(myply);
+
+    // Opens files
+    std::fstream filteredFile(filtered_good, std::ios::out | std::ios::trunc);
+    std::fstream remainingFile(remaining_good, std::ios::out | std::ios::trunc);
+
+    // If opening is a success
+    if(filteredFile && remainingFile)
+    {
+        int countdown_filtered=0;
+        int countdown_remaining=0;
+
+
+        // Returns number of vertices
+        long nbVertices=ply_set_read_cb(myply, "vertex", "x", vertex_cb, NULL, 0);
+        printf("Number of vertices : %ld\n", nbVertices);
+
+        //ply_read()
+        //long res= ply_set_read_cb(p_ply ply, const char *element_name, const char *property_name, p_ply_read_cb read_cb,
+        //                     void *pdata, long idata);
+        //ply_get_element_info("vertex", ,,);
+
+        //int ply_get_argument_property(p_ply_argument argument,"x", nbVertices, 3);
+
+        int res=ply_get_element_info("vertex",  "x",nbVertices);
+        std::cout<<"res = "<<res<<std::endl;
+
+
+        // Writing
+        p_ply oply = ply_create("output.ply", PLY_LITTLE_ENDIAN, NULL, 0, NULL);
+
+
+
+        // add new header in ply file (count number of lines for number of vertices)
+        filteredFile.close();
+        remainingFile.close();
+
+    }
+
+
+
+    ply_close(myply);
+    std::cout<<"filterPly() ended"<<std::endl;
+}//filterPly
+
