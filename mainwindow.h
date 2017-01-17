@@ -44,15 +44,15 @@ private:
     float mValeur_AL;
     std::vector<float> mselectionInterval;
 
-    float mredmin1;
-    float mredmin2;
-    float mgreenmin;
-    float mbluemin;
+    float mhuemin1;
+    float mhuemin2;
+    float msatmin;
+    float mlightmin;
 
-    float mredmax1;
-    float mredmax2;
-    float mgreenmax;
-    float mbluemax;
+    float mhuemax1;
+    float mhuemax2;
+    float msatmax;
+    float mlightmax;
 
     QString mplypath;
 

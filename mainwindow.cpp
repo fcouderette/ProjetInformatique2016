@@ -36,14 +36,14 @@ MainWindow::MainWindow(QWidget *parent) :
     mvectorHSL({0,0,0}),
     mvectorAmpliHSL({0,0,0}),
     mselectionInterval({0,0,0,0,0,0,0,0}),
-    mredmin1(0),
-    mredmin2(0),
-    mgreenmin(0),
-    mbluemin(0),
-    mredmax1(0),
-    mredmax2(0),
-    mgreenmax(0),
-    mbluemax(0)
+    mhuemin1(0),
+    mhuemin2(0),
+    msatmin(0),
+    mlightmin(0),
+    mhuemax1(0),
+    mhuemax2(0),
+    msatmax(0),
+    mlightmax(0)
 {
     ui->setupUi(this);
     ui->graphicsView_Image->installEventFilter(this);
@@ -459,19 +459,19 @@ void MainWindow::structurateXml()
 
     tinyxml2::XMLElement * pMinInterval = xmlDoc.NewElement("minInterval");
 
-    tinyxml2::XMLElement * pRedMin1 = xmlDoc.NewElement("red1");
+    tinyxml2::XMLElement * pRedMin1 = xmlDoc.NewElement("hue1");
     pRedMin1->SetText(mselectionInterval[0]);
     pMinInterval->InsertEndChild(pRedMin1);
 
-    tinyxml2::XMLElement * pRedMin2 = xmlDoc.NewElement("red2");
+    tinyxml2::XMLElement * pRedMin2 = xmlDoc.NewElement("hue2");
     pRedMin2->SetText(mselectionInterval[2]);
     pMinInterval->InsertEndChild(pRedMin2);
 
-    tinyxml2::XMLElement * pGreenMin = xmlDoc.NewElement("green");
+    tinyxml2::XMLElement * pGreenMin = xmlDoc.NewElement("saturation");
     pGreenMin->SetText(mselectionInterval[4]);
     pMinInterval->InsertEndChild(pGreenMin);
 
-    tinyxml2::XMLElement * pBlueMin = xmlDoc.NewElement("blue");
+    tinyxml2::XMLElement * pBlueMin = xmlDoc.NewElement("lightness");
     pBlueMin->SetText(mselectionInterval[6]);
     pMinInterval->InsertEndChild(pBlueMin);
 
@@ -480,19 +480,19 @@ void MainWindow::structurateXml()
 
     tinyxml2::XMLElement * pMaxInterval = xmlDoc.NewElement("maxInterval");
 
-    tinyxml2::XMLElement * pRedMax1 = xmlDoc.NewElement("red1");
+    tinyxml2::XMLElement * pRedMax1 = xmlDoc.NewElement("hue1");
     pRedMax1->SetText(mselectionInterval[1]);
     pMaxInterval->InsertEndChild(pRedMax1);
 
-    tinyxml2::XMLElement * pRedMax2 = xmlDoc.NewElement("red2");
+    tinyxml2::XMLElement * pRedMax2 = xmlDoc.NewElement("hue2");
     pRedMax2->SetText(mselectionInterval[3]);
     pMaxInterval->InsertEndChild(pRedMax2);
 
-    tinyxml2::XMLElement * pGreenMax = xmlDoc.NewElement("green");
+    tinyxml2::XMLElement * pGreenMax = xmlDoc.NewElement("saturation");
     pGreenMax->SetText(mselectionInterval[5]);
     pMaxInterval->InsertEndChild(pGreenMax);
 
-    tinyxml2::XMLElement * pBlueMax = xmlDoc.NewElement("blue");
+    tinyxml2::XMLElement * pBlueMax = xmlDoc.NewElement("lightness");
     pBlueMax->SetText(mselectionInterval[7]);
     pMaxInterval->InsertEndChild(pBlueMax);
 
@@ -528,60 +528,60 @@ void MainWindow::chooseXml()
 
 
     // Inferior bound
-    tinyxml2::XMLElement* pminred1 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "red1" );
+    tinyxml2::XMLElement* pminred1 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "hue1" );
     const char* pminred1_value = pminred1->GetText();
     std::cout<<"\npred1_value : "<<pminred1_value<<std::endl;
 
-    tinyxml2::XMLElement* pminred2 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "red2" );
+    tinyxml2::XMLElement* pminred2 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "hue2" );
     const char* pminred2_value = pminred2->GetText();
     std::cout<<"pred2_value : "<<pminred2_value<<std::endl;
 
-    tinyxml2::XMLElement* pmingreen = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "green" );
+    tinyxml2::XMLElement* pmingreen = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "saturation" );
     const char* pmingreen_value = pmingreen->GetText();
     std::cout<<"pmingreen_value : "<<pmingreen_value<<std::endl;
 
-    tinyxml2::XMLElement* pminblue = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "blue" );
+    tinyxml2::XMLElement* pminblue = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "minInterval" )->FirstChildElement( "lightness" );
     const char* pminblue_value = pminblue->GetText();
     std::cout<<"pminblue_value : "<<pminblue_value<<std::endl;
 
 
     // Inferior bound
-    tinyxml2::XMLElement* pmaxred1 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "red1" );
+    tinyxml2::XMLElement* pmaxred1 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "hue1" );
     const char* pmaxred1_value = pmaxred1->GetText();
     std::cout<<"\npmaxred1_value : "<<pmaxred1_value<<std::endl;
 
-    tinyxml2::XMLElement* pmaxred2 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "red2" );
+    tinyxml2::XMLElement* pmaxred2 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "hue2" );
     const char* pmaxred2_value = pmaxred2->GetText();
     std::cout<<"pmaxred2_value : "<<pmaxred2_value<<std::endl;
 
-    tinyxml2::XMLElement* pmaxgreen = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "green" );
+    tinyxml2::XMLElement* pmaxgreen = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "saturation" );
     const char* pmaxgreen_value = pmaxgreen->GetText();
     std::cout<<"pmaxgreen_value : "<<pmaxgreen_value<<std::endl;
 
-    tinyxml2::XMLElement* pmaxblue = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "blue" );
+    tinyxml2::XMLElement* pmaxblue = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "lightness" );
     const char* pmaxblue_value = pmaxblue->GetText();
     std::cout<<"pmaxblue_value : "<<pmaxblue_value<<std::endl;
 
     char* pEnd;
-    mredmin1 = std::strtof(pminred1_value, &pEnd);
-    mredmin2 = std::strtof(pminred2_value, &pEnd);
-    mgreenmin = std::strtof(pmingreen_value, &pEnd);
-    mbluemin = std::strtof(pminblue_value, &pEnd);
+    mhuemin1 = std::strtof(pminred1_value, &pEnd);
+    mhuemin2 = std::strtof(pminred2_value, &pEnd);
+    msatmin = std::strtof(pmingreen_value, &pEnd);
+    mlightmin = std::strtof(pminblue_value, &pEnd);
 
-    mredmax1 = std::strtof(pmaxred1_value, &pEnd);
-    mredmax2 = std::strtof(pmaxred2_value, &pEnd);
-    mgreenmax = std::strtof(pmaxgreen_value, &pEnd);
-    mbluemax = std::strtof(pmaxblue_value, &pEnd);
+    mhuemax1 = std::strtof(pmaxred1_value, &pEnd);
+    mhuemax2 = std::strtof(pmaxred2_value, &pEnd);
+    msatmax = std::strtof(pmaxgreen_value, &pEnd);
+    mlightmax = std::strtof(pmaxblue_value, &pEnd);
 
-    std::cout<<"\npminred1_float : "<<mredmin1<<std::endl;
-    std::cout<<"pminred2_float : "<<mredmin2<<std::endl;
-    std::cout<<"pmingreen_float : "<<mgreenmin<<std::endl;
-    std::cout<<"pminblue_float : "<<mbluemin<<std::endl;
+    std::cout<<"\npminhue1_float : "<<mhuemin1<<std::endl;
+    std::cout<<"pminhue2_float : "<<mhuemin2<<std::endl;
+    std::cout<<"pminsat_float : "<<msatmin<<std::endl;
+    std::cout<<"pminlight_float : "<<mlightmin<<std::endl;
 
-    std::cout<<"\npmaxred1_float : "<<mredmax1<<std::endl;
-    std::cout<<"pmaxred2_float : "<<mredmax2<<std::endl;
-    std::cout<<"pmaxgreen_float : "<<mgreenmax<<std::endl;
-    std::cout<<"pmaxblue_float : "<<mbluemax<<std::endl;
+    std::cout<<"\npmaxhue1_float : "<<mhuemax1<<std::endl;
+    std::cout<<"pmaxhue2_float : "<<mhuemax2<<std::endl;
+    std::cout<<"pmaxsat_float : "<<msatmax<<std::endl;
+    std::cout<<"pmaxlight_float : "<<mlightmax<<std::endl;
 
 
 }
@@ -629,11 +629,29 @@ static int face_cb(p_ply_argument argument) {
 void MainWindow::filterPly()
 {
     // Get ply reference path
+    /*
     std::string newplypath1=mplypath.toUtf8().constData();
     std::string newplypath2=mplypath.toUtf8().constData();
 
+    std::string newplypath1=mplypath.toUtf8().constData();
+    std::string newplypath2=mplypath.toUtf8().constData();
+*/
+
+    QString filtered = QFileDialog::getSaveFileName(0, QObject::tr("Save filtered ply"), "/home", QObject::tr("*.ply"));
+    std::string filtered_text = filtered.toUtf8().constData(); //(char*)deux.c_str();
+    char* filtered_good = (char*)filtered_text.c_str();
+
+    QString remaining = QFileDialog::getSaveFileName(0, QObject::tr("Save remaining ply"), "/home", QObject::tr("*.ply"));
+    std::string remaining_text = remaining.toUtf8().constData(); //(char*)deux.c_str();
+    char* remaining_good = (char*)remaining_text.c_str();
+
+
+
+
+
+    // Creation of paths for output ply files
     // Keep only directory path
-    std::size_t botDirPos = newplypath2.find_last_of("/");
+    //std::size_t botDirPos = newplypath2.find_last_of("/");
     // get directory
 /*
     const char* dir=(newplypath2.substr(0, botDirPos)).c_str();
@@ -642,6 +660,10 @@ void MainWindow::filterPly()
     char* copydir2 = malloc(strlen(dir) + 1);
     strcpy(copydir2, dir);
 */
+
+
+
+/*
     //std::string hohoho=std::string(dir);
     const char* dir_filtered=(newplypath1.substr(0, botDirPos)).c_str();
     char* newPlyDirectory_filtered = const_cast<char*> (dir_filtered);
@@ -656,13 +678,11 @@ void MainWindow::filterPly()
     char* remainingName="/remaining_ply.txt";
     char* newPlyRemainingPath=strcat(newPlyDirectory_remaining,remainingName);
     std::cout<<"newPlyRemainingPath : "<<newPlyRemainingPath<<std::endl;
-
+*/
     //char* newPlyDirectory_filtered = const_cast<char*>(hohoho.c_str());
     //char* newPlyDirectory_remaining = const_cast<char*>(hohoho.c_str());
     //std::string file = newplypath2.substr(botDirPos, newplypath2.length());
     // Create new ply files paths
-
-
 
 
     // Opens ply file
@@ -671,46 +691,77 @@ void MainWindow::filterPly()
     // Reads header
     int res=ply_read_header(myply);
 
+    // Opens files
+    std::fstream filteredFile(filtered_good, std::ios::out | std::ios::trunc);
+    std::fstream remainingFile(remaining_good, std::ios::out | std::ios::trunc);
 
-    // Creation of paths for output ply files
 
-
-    // Opening of files
-    std::ofstream filteredFile(newPlyFilteredPath, std::ios::out | std::ios::trunc);
-    std::ofstream remainingFile(newPlyRemainingPath, std::ios::out | std::ios::trunc);
 
     // If opening is a success
     if(filteredFile && remainingFile)
     {
-
+        int countdown_filtered=0;
+        int countdown_remaining=0;
 
 
         // Returns number of vertices
         long nbVertices=ply_set_read_cb(myply, "vertex", "x", vertex_cb, NULL, 0);
         printf("Number of vertices : %ld\n", nbVertices);
 
+        // comment ne pas lire le header ?
+        //myply.seek[g | p](??, ios::cur);
+
         for (int iLine=0; iLine<nbVertices; iLine++)
         {
             // Get next line
             // Get rvb
+            // Returns value of argument
+            //p_ply_element elem=ply_get_next_element(myply, last);
+            //int reres=ply_get_element_info(elem, "x", resread);
+            //std::cout<<"ply_get_element_info() ended"<<reres<<std::endl;
+            //double value=ply_get_argument_value("x");
+
+/*
             // check if rvb->tsl is in interval (members values)
             std::vector<float> vect=convertRGBtoTSL( R, G, B);
-            // write line in one file or the other
+            if(vect[0]<mhuemax1 & vect[0]<mhuemax2 & vect[0]>mhuemin1 & vect[0]>mhuemin2 & vect[1]<msatmax &
+                    vect[1]>msatmin & vect[2]<mlightmax & vect[2]>mlightmin)
+            {
+                // +1 vertex
+                countdown_filtered+=1;
+                // write line in filtered file
+                std::string containing;
+                getline(myply,containing);  // to change line at the same time as libply
+                filteredFile<<containing;
+
+
+            }
+            else
+            {
+                // +1 vertex
+                countdown_remaining+=1;
+                // write line in remaining file
+                std::string containing;
+                getline(myply,containing);   // to change line at the same time as libply
+                remainingFile<<containing;
+
+            }
+
 
             //get next element...
 
-
+*/
         }
 
-        // Returns value of argument
-        //p_ply_element elem=ply_get_next_element(myply, last);
-        //int reres=ply_get_element_info(elem, "x", resread);
-        //std::cout<<"ply_get_element_info() ended"<<reres<<std::endl;
-        //double value=ply_get_argument_value("x");
 
-
+        // add new header in ply file (count number of lines for number of vertices)
         filteredFile.close();
         remainingFile.close();
+
+        // Set .ply as the extension
+        //rename(newPlyFilteredPath, "filtered_ply.ply");
+        //rename(newPlyRemainingPath, "remaining_ply.ply");
+
     }
 
 
