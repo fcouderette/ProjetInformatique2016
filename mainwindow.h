@@ -24,7 +24,8 @@ public:
     std::vector<float> mvectorHSL;
     std::vector<float> mvectorAmpliHSL;
 
-
+protected:
+    virtual void wheelEvent(QWheelEvent* event);
 
 
 private:
@@ -73,11 +74,7 @@ public slots:
     std::vector<float> defineSelection2(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL);
     void structurateXml();
     void filterPly();
-/*
-signals:
-    void pressLabel(QColor);
-    void changeSelec(std::vector<float>);
-*/
+
 };
 
 #endif // MAINWINDOW_H

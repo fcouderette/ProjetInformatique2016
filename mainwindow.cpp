@@ -110,6 +110,20 @@ void MainWindow::chooseImage()
 }
 
 //RAS
+void MainWindow::wheelEvent(QWheelEvent *event)
+{
+    //holds how the view should position the scene during transformations
+    ui->graphicsView_Image->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    // Chooses zoom
+    double myScale = 1.15;
+    // Zooms in
+    if(event->delta() > 0)
+    {ui->graphicsView_Image-> scale(myScale, myScale);}
+    // Zooms out
+    else {ui->graphicsView_Image->scale(1.0 / myScale, 1.0 / myScale);}
+}
+
+//RAS
 void MainWindow::setReferenceColor(QColor coul)
 {
     std::cout<<"\n*** setReferenceColor() ***"<<std::endl;
@@ -669,8 +683,12 @@ void MainWindow::filterPly()
 }//filterPly
 */
 
+
+
+
 void MainWindow::filterPly()
 {
+    /*
     QString filtered = QFileDialog::getSaveFileName(0, QObject::tr("Save filtered ply"), "/home", QObject::tr("*.ply"));
     std::string filtered_text = filtered.toUtf8().constData(); //(char*)deux.c_str();
     char* filtered_good = (char*)filtered_text.c_str();
@@ -726,5 +744,11 @@ void MainWindow::filterPly()
 
     ply_close(myply);
     std::cout<<"filterPly() ended"<<std::endl;
+    */
 }//filterPly
+
+
+
+
+
 
