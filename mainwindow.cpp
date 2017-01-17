@@ -11,6 +11,8 @@
 #define TIXML_USE_STL
 #include<rply.h>
 #include<rplyfile.h>
+#include<fstream>
+
 
 
 #include <QMouseEvent>
@@ -626,7 +628,42 @@ static int face_cb(p_ply_argument argument) {
 
 void MainWindow::filterPly()
 {
-    std::cout<<"\n Enter filterPly"<<std::endl;
+    // Get ply reference path
+    std::string newplypath1=mplypath.toUtf8().constData();
+    std::string newplypath2=mplypath.toUtf8().constData();
+
+    // Keep only directory path
+    std::size_t botDirPos = newplypath2.find_last_of("/");
+    // get directory
+/*
+    const char* dir=(newplypath2.substr(0, botDirPos)).c_str();
+    char* copydir1 = malloc(strlen(dir) + 1);
+    strcpy(copydir1, dir);
+    char* copydir2 = malloc(strlen(dir) + 1);
+    strcpy(copydir2, dir);
+*/
+    //std::string hohoho=std::string(dir);
+    const char* dir_filtered=(newplypath1.substr(0, botDirPos)).c_str();
+    char* newPlyDirectory_filtered = const_cast<char*> (dir_filtered);
+    std::cout<<"\nnewPlyDirectory : "<<newPlyDirectory_filtered<<std::endl;
+    char* filteredName="/filtered_ply.txt";
+    char* newPlyFilteredPath=strcat(newPlyDirectory_filtered,filteredName);
+    std::cout<<"newPlyFilteredPath : "<<newPlyFilteredPath<<std::endl;
+
+    const char* dir_remaining=(newplypath2.substr(0, botDirPos)).c_str();
+    char* newPlyDirectory_remaining = const_cast<char*> (dir_remaining);
+    std::cout<<"newPlyDirectory2 : "<<newPlyDirectory_remaining<<std::endl;
+    char* remainingName="/remaining_ply.txt";
+    char* newPlyRemainingPath=strcat(newPlyDirectory_remaining,remainingName);
+    std::cout<<"newPlyRemainingPath : "<<newPlyRemainingPath<<std::endl;
+
+    //char* newPlyDirectory_filtered = const_cast<char*>(hohoho.c_str());
+    //char* newPlyDirectory_remaining = const_cast<char*>(hohoho.c_str());
+    //std::string file = newplypath2.substr(botDirPos, newplypath2.length());
+    // Create new ply files paths
+
+
+
 
     // Opens ply file
     p_ply myply=ply_open(mplypath.toUtf8().constData(),NULL, 0, NULL);
@@ -634,14 +671,49 @@ void MainWindow::filterPly()
     // Reads header
     int res=ply_read_header(myply);
 
-    // Returns number of vertices
-    long resread=ply_set_read_cb(myply, "vertex", "x", vertex_cb, NULL, 0);
-    printf("Number of vertices : %ld\n", resread);
 
-    // Returns value of argument
-    int reres=ply_get_argument_property("vertex", "x", resread, 12);
-    std::cout<<"ply_get_argument_property() ended"<<reres<<std::endl;
-    //double value=ply_get_argument_value("x");
+    // Creation of paths for output ply files
+
+
+    // Opening of files
+    std::ofstream filteredFile(newPlyFilteredPath, std::ios::out | std::ios::trunc);
+    std::ofstream remainingFile(newPlyRemainingPath, std::ios::out | std::ios::trunc);
+
+    // If opening is a success
+    if(filteredFile && remainingFile)
+    {
+
+
+
+        // Returns number of vertices
+        long nbVertices=ply_set_read_cb(myply, "vertex", "x", vertex_cb, NULL, 0);
+        printf("Number of vertices : %ld\n", nbVertices);
+
+        for (int iLine=0; iLine<nbVertices; iLine++)
+        {
+            // Get next line
+            // Get rvb
+            // check if rvb->tsl is in interval (members values)
+            std::vector<float> vect=convertRGBtoTSL( R, G, B);
+            // write line in one file or the other
+
+            //get next element...
+
+
+        }
+
+        // Returns value of argument
+        //p_ply_element elem=ply_get_next_element(myply, last);
+        //int reres=ply_get_element_info(elem, "x", resread);
+        //std::cout<<"ply_get_element_info() ended"<<reres<<std::endl;
+        //double value=ply_get_argument_value("x");
+
+
+        filteredFile.close();
+        remainingFile.close();
+    }
+
+
 
     ply_close(myply);
     std::cout<<"filterPly() ended"<<std::endl;
