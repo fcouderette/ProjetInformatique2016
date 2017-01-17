@@ -94,20 +94,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-/*
-//RAS
-bool MainWindow::eventFilter(QObject *obj, QEvent *event)
-{
-    std::cout<<"eventFilter()"<<std::endl;
-    if(obj==ui->graphicsView_Image && event->type()==QEvent::MouseButtonPress)
-    {
-        emit pressLabel();
-        std::cout<<"emit"<<std::endl;
-        return true;
-    }
-    return QObject::eventFilter(obj,event);
-}
-*/
+
 //RAS
 void MainWindow::chooseImage()
 {
@@ -271,12 +258,6 @@ std::vector<float> MainWindow::setColorAmplitude()
 //RAS
 void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL)
 {
-    /*
-    std::cout<<"\n*** defineSelection() ***"<<std::endl;
-    std::cout<<"bound T = "<<vectorAmpliHSL[0]<<std::endl;
-    std::cout<<"bound S = "<<vectorAmpliHSL[1]<<std::endl;
-    std::cout<<"bound L = "<<vectorAmpliHSL[2]<<std::endl;
-    */
     // Create a vector containing interval of selection bounds
 
     // Bounds
@@ -294,9 +275,6 @@ void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float>
     if(maxLum>100){maxLum=100;}
 
     // Intervals
-    //std::vector<float> selectionIntervalSat{minSat,maxSat};
-    //std::vector<float> selectionIntervalLum{minLum,maxLum};
-
     if(minHue>=0 && maxHue<=360)
     {
         //std::vector<float> selectionIntervalHue1{minHue,maxHue};
@@ -628,15 +606,6 @@ static int face_cb(p_ply_argument argument) {
 
 void MainWindow::filterPly()
 {
-    // Get ply reference path
-    /*
-    std::string newplypath1=mplypath.toUtf8().constData();
-    std::string newplypath2=mplypath.toUtf8().constData();
-
-    std::string newplypath1=mplypath.toUtf8().constData();
-    std::string newplypath2=mplypath.toUtf8().constData();
-*/
-
     QString filtered = QFileDialog::getSaveFileName(0, QObject::tr("Save filtered ply"), "/home", QObject::tr("*.ply"));
     std::string filtered_text = filtered.toUtf8().constData(); //(char*)deux.c_str();
     char* filtered_good = (char*)filtered_text.c_str();
@@ -644,46 +613,6 @@ void MainWindow::filterPly()
     QString remaining = QFileDialog::getSaveFileName(0, QObject::tr("Save remaining ply"), "/home", QObject::tr("*.ply"));
     std::string remaining_text = remaining.toUtf8().constData(); //(char*)deux.c_str();
     char* remaining_good = (char*)remaining_text.c_str();
-
-
-
-
-
-    // Creation of paths for output ply files
-    // Keep only directory path
-    //std::size_t botDirPos = newplypath2.find_last_of("/");
-    // get directory
-/*
-    const char* dir=(newplypath2.substr(0, botDirPos)).c_str();
-    char* copydir1 = malloc(strlen(dir) + 1);
-    strcpy(copydir1, dir);
-    char* copydir2 = malloc(strlen(dir) + 1);
-    strcpy(copydir2, dir);
-*/
-
-
-
-/*
-    //std::string hohoho=std::string(dir);
-    const char* dir_filtered=(newplypath1.substr(0, botDirPos)).c_str();
-    char* newPlyDirectory_filtered = const_cast<char*> (dir_filtered);
-    std::cout<<"\nnewPlyDirectory : "<<newPlyDirectory_filtered<<std::endl;
-    char* filteredName="/filtered_ply.txt";
-    char* newPlyFilteredPath=strcat(newPlyDirectory_filtered,filteredName);
-    std::cout<<"newPlyFilteredPath : "<<newPlyFilteredPath<<std::endl;
-
-    const char* dir_remaining=(newplypath2.substr(0, botDirPos)).c_str();
-    char* newPlyDirectory_remaining = const_cast<char*> (dir_remaining);
-    std::cout<<"newPlyDirectory2 : "<<newPlyDirectory_remaining<<std::endl;
-    char* remainingName="/remaining_ply.txt";
-    char* newPlyRemainingPath=strcat(newPlyDirectory_remaining,remainingName);
-    std::cout<<"newPlyRemainingPath : "<<newPlyRemainingPath<<std::endl;
-*/
-    //char* newPlyDirectory_filtered = const_cast<char*>(hohoho.c_str());
-    //char* newPlyDirectory_remaining = const_cast<char*>(hohoho.c_str());
-    //std::string file = newplypath2.substr(botDirPos, newplypath2.length());
-    // Create new ply files paths
-
 
     // Opens ply file
     p_ply myply=ply_open(mplypath.toUtf8().constData(),NULL, 0, NULL);
@@ -694,8 +623,6 @@ void MainWindow::filterPly()
     // Opens files
     std::fstream filteredFile(filtered_good, std::ios::out | std::ios::trunc);
     std::fstream remainingFile(remaining_good, std::ios::out | std::ios::trunc);
-
-
 
     // If opening is a success
     if(filteredFile && remainingFile)
@@ -713,6 +640,8 @@ void MainWindow::filterPly()
 
         for (int iLine=0; iLine<nbVertices; iLine++)
         {
+            //std::cout<<"opening of ply file ok"<<std::endl;
+
             // Get next line
             // Get rvb
             // Returns value of argument
@@ -757,10 +686,6 @@ void MainWindow::filterPly()
         // add new header in ply file (count number of lines for number of vertices)
         filteredFile.close();
         remainingFile.close();
-
-        // Set .ply as the extension
-        //rename(newPlyFilteredPath, "filtered_ply.ply");
-        //rename(newPlyRemainingPath, "remaining_ply.ply");
 
     }
 
