@@ -1,4 +1,5 @@
-#include"readply.h"
+#include"toolply.h"
+#include"fstream"
 
 std::vector<float> vectX;
 std::vector<float> vectY;
@@ -24,7 +25,7 @@ std::vector<int> vectGout;
 std::vector<int> vectBout;
 std::vector<int> vectAout;
 
-
+/*
 float mhuemin1=240;
 float mhuemin2=240;
 float msatmin=52;
@@ -34,7 +35,7 @@ float mhuemax1=240;
 float mhuemax2=240;
 float msatmax=80;
 float mlightmax=90;
-
+*/
 
 
 // Callbacks for ply reading
@@ -44,7 +45,7 @@ static int x_cb(p_ply_argument argument)
     long eol;
     ply_get_argument_user_data(argument, NULL, &eol);
     vectX.push_back(ply_get_argument_value(argument));
-    std::cout<<"Yo ! "<<ply_get_argument_value(argument)<<std::endl;
+    //std::cout<<"Yo ! "<<ply_get_argument_value(argument)<<std::endl;
     return 1;
 }
 
@@ -108,12 +109,53 @@ static int alpha_cb(p_ply_argument argument)
     return 1;
 }
 
-
-
-void readply(const char* name)
+// Callback for creation of ply
+void error_cb(p_ply ply, const char *message)
 {
-    p_ply myply=ply_open(name,NULL, 0, NULL);
-    std::cout<<"nom ply lu"<<name.toStdString()<<std::endl;
+    //ply_get_argument_user_data(argument, NULL, &eol);
+    printf("\nYou made an Error\n");
+}
+
+
+
+
+
+
+/*
+static int setup_callbacks(p_ply inputply, p_ply outputply1, p_ply outputply2)
+{
+    p_ply_element element = NULL;
+
+        while ((element = ply_get_next_element(iply, element))) {
+            p_ply_property property = NULL;
+            long ninstances = 0;
+            const char *element_name;
+            ply_get_element_info(element, &element_name, &ninstances);
+
+            if (!ply_add_element(oply, element_name, ninstances)) return 0;
+
+            while ((property = ply_get_next_property(element, property))) {
+                const char *property_name;
+                e_ply_type type, length_type, value_type;
+                ply_get_property_info(property, &property_name, &type,
+                        &length_type, &value_type);
+
+                if (!ply_set_read_cb(iply, element_name, property_name, callback,
+                        oply, 0)) return 0;
+
+                if (!ply_add_property(oply, property_name, type, length_type,
+                        value_type)) return 0;
+            }
+        }
+        return 1;
+}
+*/
+
+
+void readply(MainWindow* win,const char* name1, const char* name2, const char* name3)
+{
+    p_ply myply=ply_open(name1,NULL, 0, NULL);
+    //std::cout<<"nom ply lu"<<name<<std::endl; //.toStdString()
 
     // Reads header
     int reshead=ply_read_header(myply);
@@ -137,54 +179,93 @@ void readply(const char* name)
     // Loop i on all elements
     for(int i=0; i<lenVect;i++)
     {
-        // Count j for elements in color interval
-        int j=0;
-        // Count k for elements out of color interval
-        int k=0;
         std::vector<float>newVector=convertRGBtoTSL(vectR[i],vectG[i],vectB[i]);
-        if     (((newVector[0]>=mhuemin1 && newVector[0]<=mhuemax1) ||
-                (newVector[0]>=mhuemin2 && newVector[0]<=mhuemax2)) &&
-                newVector[1]>=msatmin && newVector[1]<=msatmax &&
-                newVector[2]>=mlightmin && newVector[2]<=mlightmax)
+        if     (((newVector[0]>=win->mhuemin1 && newVector[0]<=win->mhuemax1) || (newVector[0]>=win->mhuemin2 && newVector[0]<=win->mhuemax2)) &&
+                (newVector[1]>=win->msatmin && newVector[1]<=win->msatmax) &&
+                (newVector[2]>=win->mlightmin && newVector[2]<=win->mlightmax))
         {
-            vectXin[j]=vectX[i];
-            vectYin[j]=vectY[i];
-            vectZin[j]=vectZ[i];
-            vectRin[j]=vectR[i];
-            vectGin[j]=vectG[i];
-            vectBin[j]=vectB[i];
-            vectAin[j]=vectA[i];
-            j+=1;
+            std::cout<<"In RVB : "<<vectR[i]<<" "<<vectG[i]<<" "<<vectB[i]<<std::endl;
+            std::cout<<"In TSL : "<<newVector[0]<<" "<<newVector[1]<<" "<<newVector[2]<<std::endl;
+            vectXin.push_back(vectX[i]);
+            vectYin.push_back(vectY[i]);
+            vectZin.push_back(vectZ[i]);
+            vectRin.push_back(vectR[i]);
+            vectGin.push_back(vectG[i]);
+            vectBin.push_back(vectB[i]);
+            vectAin.push_back(vectA[i]);
+            //std::cout<<"In : "<<vectXin[i]<<" "<<vectYin[i]<<" "<<vectZin[i]<<" "<<vectRin[i]<<" "<<vectGin[i]<<" "<<vectBin[i]<<" "<<std::endl;
+
+
         }
         else
         {
-            vectXout[k]=vectX[i];
-            vectYout[k]=vectY[i];
-            vectZout[k]=vectZ[i];
-            vectRout[k]=vectR[i];
-            vectGout[k]=vectG[i];
-            vectBout[k]=vectB[i];
-            vectAout[k]=vectA[i];
-            k+=1;
-        }
+            std::cout<<"\nOut RVB : "<<vectR[i]<<" "<<vectG[i]<<" "<<vectB[i]<<std::endl;
+            std::cout<<"Out TSL : "<<newVector[0]<<" "<<newVector[1]<<" "<<newVector[2]<<std::endl;
+            vectXout.push_back(vectX[i]);
+            vectYout.push_back(vectY[i]);
+            vectZout.push_back(vectZ[i]);
+            vectRout.push_back(vectR[i]);
+            vectGout.push_back(vectG[i]);
+            vectBout.push_back(vectB[i]);
+            vectAout.push_back(vectA[i]);
+            //std::cout<<"Out : "<<vectXout[i]<<" "<<vectYout[i]<<" "<<vectZout[i]<<" "<<vectRout[i]<<" "<<vectGout[i]<<" "<<vectBout[i]<<" \n"<<std::endl;
 
+        }
     }
-    std::cout<<"vect in = "<<vectRin[0]<<std::endl;
+
+    writeply(name2, name3);
+
+    ply_close(myply);
 }
 
 
 
+void writeply(const char* name2, const char* name3)
+{
+
+    // Opens files
+    std::ofstream filteredFile(name2, std::ios::out | std::ios::trunc);
+    std::ofstream remainingFile(name3, std::ios::out | std::ios::trunc);
+
+    // If opening is a success
+    if(filteredFile && remainingFile)
+    {
+        filteredFile<<"ply\n"<<"format ascii 1.0\n"<<"element vertex "<<vectXin.size()<<"\n";
+        filteredFile<<"property float x\n"<<"property float y\n"<<"property float z\n"<<"property float red\n"<<"property float green\n"<<"property float blue\n"<<"property float alpha\n";
+        filteredFile<<"end header\n";
+
+        for(int i=0;i<vectXin.size();i++)
+        {
+            filteredFile<<vectXin[i]<<" "<<vectYin[i]<<" "<<vectZin[i]<<" "<<vectRin[i]<<" "<<vectGin[i]<<" "<<vectBin[i]<<" "<<vectAin[i]<<std::endl;
+        }
+
+        remainingFile<<"ply\n"<<"format ascii 1.0\n"<<"element vertex "<<vectXout.size()<<"\n";
+        remainingFile<<"property float x\n"<<"property float y\n"<<"property float z\n"<<"property float red\n"<<"property float green\n"<<"property float blue\n"<<"property float alpha\n";
+        remainingFile<<"end header\n";
+
+        for(int i=0;i<vectXout.size();i++)
+        {
+            remainingFile<<vectXout[i]<<" "<<vectYout[i]<<" "<<vectZout[i]<<" "<<vectRout[i]<<" "<<vectGout[i]<<" "<<vectBout[i]<<" "<<vectAout[i]<<std::endl;
+        }
+
+        // Closes files
+        filteredFile.close();
+        remainingFile.close();
+
+     }
+}
+
 std::vector<float> convertRGBtoTSL(int R,int G,int B)
 {
-    std::cout<<"\n*** MainWindow::convertRGBtoTSL() ***"<<std::endl;
+    //std::cout<<"\n*** MainWindow::convertRGBtoTSL() ***"<<std::endl;
 
     //determination of maximum among R,G,B
 
     int Max=std::max(std::max(R,G),B);
     int Min=std::min(std::min(R,G),B);
 
-    std::cout<<"Max : "<<Max<<std::endl;
-    std::cout<<"Min : "<<Min<<std::endl;
+    //std::cout<<"Max : "<<Max<<std::endl;
+    //std::cout<<"Min : "<<Min<<std::endl;
 
     float mValeur_H;
     float mValeur_S;
@@ -223,7 +304,7 @@ std::vector<float> convertRGBtoTSL(int R,int G,int B)
         // red=green=blue
         else if(Max==G && Max==R && Max==B){mValeur_H=0;}
 
-        //std::cout<<"HueRef : "<<mValeur_H<<std::endl;
+        //std::cout<<"\nHueRef : "<<mValeur_H<<std::endl;
 
         // Saturation
         mValeur_S=100*(float(C)/float(Max));
@@ -242,11 +323,5 @@ std::vector<float> convertRGBtoTSL(int R,int G,int B)
 
 
     return vectorHSL;
-/*
-    // Setting of value in interface
-    ui->text_value_H->setText(QString("%1").arg(mValeur_H));
-    ui->text_value_S->setText(QString("%1").arg(mValeur_S));
-    ui->text_value_L->setText(QString("%1").arg(mValeur_L));
-*/
 }
 

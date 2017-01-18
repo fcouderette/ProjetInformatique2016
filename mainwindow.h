@@ -26,6 +26,18 @@ public:
     std::vector<float> mvectorHSL;
     std::vector<float> mvectorAmpliHSL;
 
+    float mhuemin1;
+    float mhuemin2;
+    float msatmin;
+    float mlightmin;
+
+    float mhuemax1;
+    float mhuemax2;
+    float msatmax;
+    float mlightmax;
+
+    QString mplypath;
+
 
 
 
@@ -50,17 +62,7 @@ private:
     float mValeur_AL;
     std::vector<float> mselectionInterval;
 
-    float mhuemin1;
-    float mhuemin2;
-    float msatmin;
-    float mlightmin;
 
-    float mhuemax1;
-    float mhuemax2;
-    float msatmax;
-    float mlightmax;
-
-    QString mplypath;
 
 
 

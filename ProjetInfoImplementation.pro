@@ -19,13 +19,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     sceneclickable.cpp \
     rply.c \
-    readply.cpp
+    toolply.cpp
 
 HEADERS  += mainwindow.h \
     sceneclickable.h \
     rply.h \
     rplyfile.h \
-    readply.h
+    toolply.h
 
 FORMS    += mainwindow.ui
 

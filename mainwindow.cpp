@@ -13,7 +13,7 @@
 #include<rplyfile.h>
 #include<fstream>
 
-#include<readply.h>
+#include<toolply.h>
 
 
 
@@ -555,321 +555,29 @@ void MainWindow::choosePly()
 
 }
 
-/*
-// Callbacks for ply reading
-static int x_cb(p_ply_argument argument)
-{
-    long length, value_index;
-    long eol;
-    ply_get_argument_user_data(argument, NULL, &eol);
-    mvectX.push_back(ply_get_argument_value(argument));
-    std::cout<<"Yo ! "<<ply_get_argument_value(argument)<<std::endl;
-    return 1;
-}
-
-static int y_cb(p_ply_argument argument)
-{
-    long length, value_index;
-    long eol;
-    ply_get_argument_user_data(argument, NULL, &eol);
-    mvectY.push_back(ply_get_argument_value(argument));
-    return 1;
-}
-
-static int z_cb(p_ply_argument argument)
-{
-    long length, value_index;
-    long eol;
-    ply_get_argument_user_data(argument, NULL, &eol);
-    mvectZ.push_back(ply_get_argument_value(argument));
-    return 1;
-}
-
-static int r_cb(p_ply_argument argument)
-{
-    long length, value_index;
-    long eol;
-    ply_get_argument_user_data(argument, NULL, &eol);
-    mvectR.push_back(ply_get_argument_value(argument));
-    return 1;
-}
-
-static int g_cb(p_ply_argument argument)
-{
-    long length, value_index;
-    long eol;
-    ply_get_argument_user_data(argument, NULL, &eol);
-    mvectG.push_back(ply_get_argument_value(argument));
-    return 1;
-}
-
-static int b_cb(p_ply_argument argument)
-{
-    long length, value_index;
-    long eol;
-    ply_get_argument_user_data(argument, NULL, &eol);
-    mvectB.push_back(ply_get_argument_value(argument));
-    return 1;
-}
-
-static int alpha_cb(p_ply_argument argument)
-{
-    long length, value_index;
-    long eol;
-    ply_get_argument_user_data(argument, NULL, &eol);
-    mvectA.push_back(ply_get_argument_value(argument));
-    return 1;
-}
-*/
-
-
-//RAS
-void error_cb(p_ply ply, const char *message)
-{
-    //ply_get_argument_user_data(argument, NULL, &eol);
-    printf("\nYou made an Error\n");
-}
-
-
-
-
-/*
-void MainWindow::filterPly()
-{
-    QString filtered = QFileDialog::getSaveFileName(0, QObject::tr("Save filtered ply"), "/home", QObject::tr("*.ply"));
-    std::string filtered_text = filtered.toUtf8().constData(); //(char*)deux.c_str();
-    char* filtered_good = (char*)filtered_text.c_str();
-
-    QString remaining = QFileDialog::getSaveFileName(0, QObject::tr("Save remaining ply"), "/home", QObject::tr("*.ply"));
-    std::string remaining_text = remaining.toUtf8().constData(); //(char*)deux.c_str();
-    char* remaining_good = (char*)remaining_text.c_str();
-
-    // Opens ply file
-    p_ply myply=ply_open(mplypath.toUtf8().constData(),NULL, 0, NULL);
-
-    // Reads header
-    int res=ply_read_header(myply);
-
-    // Opens files
-    std::fstream filteredFile(filtered_good, std::ios::out | std::ios::trunc);
-    std::fstream remainingFile(remaining_good, std::ios::out | std::ios::trunc);
-
-    // If opening is a success
-    if(filteredFile && remainingFile)
-    {
-        int countdown_filtered=0;
-        int countdown_remaining=0;
-
-
-        // Returns number of vertices
-        long nbVertices=ply_set_read_cb(myply, "vertex", "x", vertex_cb, NULL, 0);
-        printf("Number of vertices : %ld\n", nbVertices);
-
-        std::string useless;
-        for(int i=0;i<14;i++)
-        {
-            getline(myply,useless);
-            std::cout<<useless<<std::endl;
-        }
-
-
-        // comment ne pas lire le header ?
-        //myply.seek[g | p](??, ios::cur);
-
-        for (int iLine=0; iLine<nbVertices; iLine++)
-        {
-            //std::cout<<"opening of ply file ok"<<std::endl;
-
-            // Get next line
-            // Get rvb
-            // Returns value of argument
-            //p_ply_element elem=ply_get_next_element(myply, last);
-            //int reres=ply_get_element_info(elem, "x", resread);
-            //std::cout<<"ply_get_element_info() ended"<<reres<<std::endl;
-            //double value=ply_get_argument_value("x");
-
-
-            // check if rvb->tsl is in interval (members values)
-            std::vector<float> vect=convertRGBtoTSL( R, G, B);
-            if(vect[0]<mhuemax1 & vect[0]<mhuemax2 & vect[0]>mhuemin1 & vect[0]>mhuemin2 & vect[1]<msatmax &
-                    vect[1]>msatmin & vect[2]<mlightmax & vect[2]>mlightmin)
-            {
-                // +1 vertex
-                countdown_filtered+=1;
-                // write line in filtered file
-                std::string containing;
-                getline(myply,containing);  // to change line at the same time as libply
-                filteredFile<<containing;
-
-
-            }
-            else
-            {
-                // +1 vertex
-                countdown_remaining+=1;
-                // write line in remaining file
-                std::string containing;
-                getline(myply,containing);   // to change line at the same time as libply
-                remainingFile<<containing;
-
-            }
-
-
-            //get next element...
-
-
-        }
-
-
-        // add new header in ply file (count number of lines for number of vertices)
-        filteredFile.close();
-        remainingFile.close();
-
-    }
-
-
-
-    ply_close(myply);
-    std::cout<<"filterPly() ended"<<std::endl;
-}//filterPly
-*/
-
-
 
 
 void MainWindow::filterPly()
 {
     std::cout<<"\nfilterPly()"<<std::endl;
 
-    std::vector<float> vectXin;
-    std::vector<float> vectYin;
-    std::vector<float> vectZin;
-    std::vector<int> vectRin;
-    std::vector<int> vectGin;
-    std::vector<int> vectBin;
-    std::vector<int> vectAin;
-
-    std::vector<float> vectXout;
-    std::vector<float> vectYout;
-    std::vector<float> vectZout;
-    std::vector<int> vectRout;
-    std::vector<int> vectGout;
-    std::vector<int> vectBout;
-    std::vector<int> vectAout;
-
     // Chooses a path for filtered ply
     QString filtered = QFileDialog::getSaveFileName(0, QObject::tr("Save filtered ply"), "/home", QObject::tr("*.ply"));
-    std::string filtered_text = filtered.toUtf8().constData(); //(char*)deux.c_str();
+    std::string filtered_text = filtered.toUtf8().constData();
     char* filtered_good = (char*)filtered_text.c_str();
 
     // Chooses a path for remaining ply
     QString remaining = QFileDialog::getSaveFileName(0, QObject::tr("Save remaining ply"), "/home", QObject::tr("*.ply"));
-    std::string remaining_text = remaining.toUtf8().constData(); //(char*)deux.c_str();
+    std::string remaining_text = remaining.toUtf8().constData();
     char* remaining_good = (char*)remaining_text.c_str();
 
-    // Opens ply file
-    p_ply myply=ply_open(mplypath.toUtf8().constData(),NULL, 0, NULL);
-    std::cout<<"nom ply lu"<<mplypath.toStdString()<<std::endl;
+    readply(this,mplypath.toStdString().c_str(), filtered_good, remaining_good);
 
 
-    // Reads header
-    int reshead=ply_read_header(myply);
-    std::cout<<"reshead"<<reshead<<std::endl;
-
-    /*
-    p_ply filteredPly= ply_create(filtered_good, PLY_ASCII, error_cb, NULL, 0);
-    p_ply remainingPly= ply_create(remaining_good, PLY_ASCII, error_cb, NULL, 0);
-
-
-    // Returns number of vertices
-    //long nbVertices=ply_set_read_cb(myply, "vertex", "x", vertex_cb, NULL, 0);
-    ply_set_read_cb(myply, "vertex", "x", x_cb, NULL, 0);
-    ply_set_read_cb(myply, "vertex", "y", y_cb, NULL, 0);
-    ply_set_read_cb(myply, "vertex", "z", z_cb, NULL, 0);
-    ply_set_read_cb(myply, "vertex", "red", r_cb, NULL, 0);
-    ply_set_read_cb(myply, "vertex", "green", g_cb, NULL, 0);
-    ply_set_read_cb(myply, "vertex", "blue", b_cb, NULL, 0);
-    ply_set_read_cb(myply, "vertex", "alpha", alpha_cb, NULL, 0);
-
-    ply_read(myply);
-
-    int lenVect=mvectX.size();
-    std::cout<<"taille vecteur : "<<mvectX.size()<<std::endl;
-
-    // Loop i on all elements
-    for(int i=0; i<lenVect;i++)
-    {
-        // Count j for elements in color interval
-        int j=0;
-        // Count k for elements out of color interval
-        int k=0;
-        std::vector<float>newVector=convertRGBtoTSL(mvectR[i],mvectG[i],mvectB[i]);
-        if     (((newVector[0]>=mhuemin1 && newVector[0]<=mhuemax1) ||
-                (newVector[0]>=mhuemin2 && newVector[0]<=mhuemax2)) &&
-                newVector[1]>=msatmin && newVector[1]<=msatmax &&
-                newVector[2]>=mlightmin && newVector[2]<=mlightmax)
-        {
-            vectXin[j]=mvectX[i];
-            vectYin[j]=mvectY[i];
-            vectZin[j]=mvectZ[i];
-            vectRin[j]=mvectR[i];
-            vectGin[j]=mvectG[i];
-            vectBin[j]=mvectB[i];
-            vectAin[j]=mvectA[i];
-            j+=1;
-        }
-        else
-        {
-            vectXout[k]=mvectX[i];
-            vectYout[k]=mvectY[i];
-            vectZout[k]=mvectZ[i];
-            vectRout[k]=mvectR[i];
-            vectGout[k]=mvectG[i];
-            vectBout[k]=mvectB[i];
-            vectAout[k]=mvectA[i];
-            k+=1;
-        }
-
-    }
-    std::cout<<"vect in = "<<vectRin[0]<<std::endl;
-
-
-
-    //long res= ply_set_read_cb(p_ply ply, const char *element_name, const char *property_name, p_ply_read_cb read_cb,
-    //                     void *pdata, long idata);
-    //ply_get_element_info("vertex", ,,);
-
-    //int ply_get_argument_property(p_ply_argument argument,"x", nbVertices, 3);
-
-    //int res=ply_get_element_info("vertex",  "x",nbVertices);
-    //std::cout<<"res = "<<res<<std::endl;
-
-
-    // Writing
-    p_ply oply = ply_create("output.ply", PLY_LITTLE_ENDIAN, NULL, 0, NULL);
-
-
-
-    // add new header in ply file (count number of lines for number of vertices)
-
-
-
-   // Writing
-   //p_ply ply_create(const char *name, e_ply_storage_mode storage_mode, p_ply_error_cb error_cb, long idata, void *pdata);
-   //int ply_add_element(p_ply ply, const char *name, long ninstances);
-   //int ply_add_property(p_ply ply, const char *name, e_ply_type type, e_ply_type length_type, e_ply_type value_type);
-   //int ply_write_header(p_ply ply);
-
-
-
-    ply_close(filteredPly);
-    ply_close(remainingPly);
-    */
-    ply_close(myply);
 
     std::cout<<"filterPly() ended"<<std::endl;
 
-}//filterPly
+} //filterPly
 
 
 
