@@ -155,11 +155,11 @@ static int setup_callbacks(p_ply inputply, p_ply outputply1, p_ply outputply2)
 void readply(MainWindow* win,const char* name1, const char* name2, const char* name3)
 {
     p_ply myply=ply_open(name1,NULL, 0, NULL);
-    //std::cout<<"nom ply lu"<<name<<std::endl; //.toStdString()
+    std::cout<<"nom ply lu : "<<name1<<std::endl; //.toStdString()
 
     // Reads header
     int reshead=ply_read_header(myply);
-    std::cout<<"reshead"<<reshead<<std::endl;
+    std::cout<<"reshead="<<reshead<<std::endl;
 
     // Returns number of vertices
     //long nbVertices=ply_set_read_cb(myply, "vertex", "x", vertex_cb, NULL, 0);

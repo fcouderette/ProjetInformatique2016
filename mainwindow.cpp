@@ -560,7 +560,7 @@ void MainWindow::choosePly()
 void MainWindow::filterPly()
 {
     std::cout<<"\nfilterPly()"<<std::endl;
-
+/*
     // Chooses a path for filtered ply
     QString filtered = QFileDialog::getSaveFileName(0, QObject::tr("Save filtered ply"), "/home", QObject::tr("*.ply"));
     std::string filtered_text = filtered.toUtf8().constData();
@@ -572,8 +572,8 @@ void MainWindow::filterPly()
     char* remaining_good = (char*)remaining_text.c_str();
 
     readply(this,mplypath.toStdString().c_str(), filtered_good, remaining_good);
-
-
+*/
+readply(this,"/home/frederique/Bureau/input.ply", "/home/frederique/Bureau/1.ply", "/home/frederique/Bureau/2.ply");
 
     std::cout<<"filterPly() ended"<<std::endl;
 
