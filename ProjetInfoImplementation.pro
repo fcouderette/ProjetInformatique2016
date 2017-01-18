@@ -18,12 +18,14 @@ CONFIG += console c++11
 SOURCES += main.cpp\
         mainwindow.cpp \
     sceneclickable.cpp \
-    rply.c
+    rply.c \
+    readply.cpp
 
 HEADERS  += mainwindow.h \
     sceneclickable.h \
     rply.h \
-    rplyfile.h
+    rplyfile.h \
+    readply.h
 
 FORMS    += mainwindow.ui
 

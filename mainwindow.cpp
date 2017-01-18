@@ -13,6 +13,8 @@
 #include<rplyfile.h>
 #include<fstream>
 
+#include<readply.h>
+
 
 
 #include <QMouseEvent>
@@ -43,8 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mhuemax1(0),
     mhuemax2(0),
     msatmax(0),
-    mlightmax(0),
-    mvectX({0})
+    mlightmax(0)
 {
     ui->setupUi(this);
     ui->graphicsView_Image->installEventFilter(this);
@@ -554,24 +555,15 @@ void MainWindow::choosePly()
 
 }
 
-
+/*
 // Callbacks for ply reading
-static int vertex_cb(p_ply_argument argument)
-{
-    long eol;
-    ply_get_argument_user_data(argument, NULL, &eol);
-    printf("%g", ply_get_argument_value(argument));
-    if (eol) printf("\n");
-    else printf(" ");
-    return 1;
-}
-
 static int x_cb(p_ply_argument argument)
 {
     long length, value_index;
     long eol;
     ply_get_argument_user_data(argument, NULL, &eol);
     mvectX.push_back(ply_get_argument_value(argument));
+    std::cout<<"Yo ! "<<ply_get_argument_value(argument)<<std::endl;
     return 1;
 }
 
@@ -628,6 +620,8 @@ static int alpha_cb(p_ply_argument argument)
     mvectA.push_back(ply_get_argument_value(argument));
     return 1;
 }
+*/
+
 
 //RAS
 void error_cb(p_ply ply, const char *message)
@@ -775,11 +769,14 @@ void MainWindow::filterPly()
 
     // Opens ply file
     p_ply myply=ply_open(mplypath.toUtf8().constData(),NULL, 0, NULL);
+    std::cout<<"nom ply lu"<<mplypath.toStdString()<<std::endl;
+
 
     // Reads header
     int reshead=ply_read_header(myply);
+    std::cout<<"reshead"<<reshead<<std::endl;
 
-
+    /*
     p_ply filteredPly= ply_create(filtered_good, PLY_ASCII, error_cb, NULL, 0);
     p_ply remainingPly= ply_create(remaining_good, PLY_ASCII, error_cb, NULL, 0);
 
@@ -793,6 +790,8 @@ void MainWindow::filterPly()
     ply_set_read_cb(myply, "vertex", "green", g_cb, NULL, 0);
     ply_set_read_cb(myply, "vertex", "blue", b_cb, NULL, 0);
     ply_set_read_cb(myply, "vertex", "alpha", alpha_cb, NULL, 0);
+
+    ply_read(myply);
 
     int lenVect=mvectX.size();
     std::cout<<"taille vecteur : "<<mvectX.size()<<std::endl;
@@ -835,7 +834,7 @@ void MainWindow::filterPly()
     std::cout<<"vect in = "<<vectRin[0]<<std::endl;
 
 
-    ply_read(myply);
+
     //long res= ply_set_read_cb(p_ply ply, const char *element_name, const char *property_name, p_ply_read_cb read_cb,
     //                     void *pdata, long idata);
     //ply_get_element_info("vertex", ,,);
@@ -861,9 +860,13 @@ void MainWindow::filterPly()
    //int ply_add_property(p_ply ply, const char *name, e_ply_type type, e_ply_type length_type, e_ply_type value_type);
    //int ply_write_header(p_ply ply);
 
-    ply_close(myply);
+
+
     ply_close(filteredPly);
     ply_close(remainingPly);
+    */
+    ply_close(myply);
+
     std::cout<<"filterPly() ended"<<std::endl;
 
 }//filterPly

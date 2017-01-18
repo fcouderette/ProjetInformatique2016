@@ -9,6 +9,8 @@
 #include<rply.h>
 #include<rplyfile.h>
 
+
+
 namespace Ui {
 class MainWindow;
 }
@@ -23,6 +25,8 @@ public:
     //bool eventFilter(QObject *obj, QEvent *event);
     std::vector<float> mvectorHSL;
     std::vector<float> mvectorAmpliHSL;
+
+
 
 
 protected:
@@ -58,13 +62,7 @@ private:
 
     QString mplypath;
 
-    std::vector<float> mvectX;
-    std::vector<float> mvectY;
-    std::vector<float> mvectZ;
-    std::vector<int> mvectR;
-    std::vector<int> mvectG;
-    std::vector<int> mvectB;
-    std::vector<int> mvectA;
+
 
 
 
