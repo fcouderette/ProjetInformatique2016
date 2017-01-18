@@ -24,6 +24,7 @@ public:
     std::vector<float> mvectorHSL;
     std::vector<float> mvectorAmpliHSL;
 
+
 protected:
     virtual void wheelEvent(QWheelEvent* event);
 
@@ -56,6 +57,14 @@ private:
     float mlightmax;
 
     QString mplypath;
+
+    std::vector<float> mvectX;
+    std::vector<float> mvectY;
+    std::vector<float> mvectZ;
+    std::vector<int> mvectR;
+    std::vector<int> mvectG;
+    std::vector<int> mvectB;
+    std::vector<int> mvectA;
 
 
 
