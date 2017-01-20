@@ -25,18 +25,6 @@ std::vector<int> vectGout;
 std::vector<int> vectBout;
 std::vector<int> vectAout;
 
-/*
-float mhuemin1=240;
-float mhuemin2=240;
-float msatmin=52;
-float mlightmin=40;
-
-float mhuemax1=240;
-float mhuemax2=240;
-float msatmax=80;
-float mlightmax=90;
-*/
-
 
 // Callbacks for ply reading
 static int x_cb(p_ply_argument argument)
@@ -117,49 +105,14 @@ void error_cb(p_ply ply, const char *message)
 }
 
 
-
-
-
-
-/*
-static int setup_callbacks(p_ply inputply, p_ply outputply1, p_ply outputply2)
-{
-    p_ply_element element = NULL;
-
-        while ((element = ply_get_next_element(iply, element))) {
-            p_ply_property property = NULL;
-            long ninstances = 0;
-            const char *element_name;
-            ply_get_element_info(element, &element_name, &ninstances);
-
-            if (!ply_add_element(oply, element_name, ninstances)) return 0;
-
-            while ((property = ply_get_next_property(element, property))) {
-                const char *property_name;
-                e_ply_type type, length_type, value_type;
-                ply_get_property_info(property, &property_name, &type,
-                        &length_type, &value_type);
-
-                if (!ply_set_read_cb(iply, element_name, property_name, callback,
-                        oply, 0)) return 0;
-
-                if (!ply_add_property(oply, property_name, type, length_type,
-                        value_type)) return 0;
-            }
-        }
-        return 1;
-}
-*/
-
-
 void readply(MainWindow* win,const char* name1, const char* name2, const char* name3)
 {
     p_ply myply=ply_open(name1,NULL, 0, NULL);
-    std::cout<<"nom ply lu : "<<name1<<std::endl; //.toStdString()
+    //std::cout<<"nom ply lu : "<<name1<<std::endl; //.toStdString()
 
     // Reads header
     int reshead=ply_read_header(myply);
-    std::cout<<"reshead="<<reshead<<std::endl;
+    //std::cout<<"reshead="<<reshead<<std::endl;
 
     // Returns number of vertices
     //long nbVertices=ply_set_read_cb(myply, "vertex", "x", vertex_cb, NULL, 0);
@@ -174,7 +127,7 @@ void readply(MainWindow* win,const char* name1, const char* name2, const char* n
     ply_read(myply);
 
     int lenVect=vectX.size();
-    std::cout<<"taille vecteur : "<<vectX.size()<<std::endl;
+    //std::cout<<"taille vecteur : "<<vectX.size()<<std::endl;
 
     // Loop i on all elements
     for(int i=0; i<lenVect;i++)
@@ -184,8 +137,8 @@ void readply(MainWindow* win,const char* name1, const char* name2, const char* n
                 (newVector[1]>=win->msatmin && newVector[1]<=win->msatmax) &&
                 (newVector[2]>=win->mlightmin && newVector[2]<=win->mlightmax))
         {
-            std::cout<<"In RVB : "<<vectR[i]<<" "<<vectG[i]<<" "<<vectB[i]<<std::endl;
-            std::cout<<"In TSL : "<<newVector[0]<<" "<<newVector[1]<<" "<<newVector[2]<<std::endl;
+            //std::cout<<"In RVB : "<<vectR[i]<<" "<<vectG[i]<<" "<<vectB[i]<<std::endl;
+            //std::cout<<"In TSL : "<<newVector[0]<<" "<<newVector[1]<<" "<<newVector[2]<<std::endl;
             vectXin.push_back(vectX[i]);
             vectYin.push_back(vectY[i]);
             vectZin.push_back(vectZ[i]);
@@ -199,8 +152,8 @@ void readply(MainWindow* win,const char* name1, const char* name2, const char* n
         }
         else
         {
-            std::cout<<"\nOut RVB : "<<vectR[i]<<" "<<vectG[i]<<" "<<vectB[i]<<std::endl;
-            std::cout<<"Out TSL : "<<newVector[0]<<" "<<newVector[1]<<" "<<newVector[2]<<std::endl;
+            //std::cout<<"\nOut RVB : "<<vectR[i]<<" "<<vectG[i]<<" "<<vectB[i]<<std::endl;
+            //std::cout<<"Out TSL : "<<newVector[0]<<" "<<newVector[1]<<" "<<newVector[2]<<std::endl;
             vectXout.push_back(vectX[i]);
             vectYout.push_back(vectY[i]);
             vectZout.push_back(vectZ[i]);
@@ -230,8 +183,9 @@ void writeply(const char* name2, const char* name3)
     // If opening is a success
     if(filteredFile && remainingFile)
     {
-        filteredFile<<"ply\n"<<"format ascii 1.0\n"<<"element vertex "<<vectXin.size()<<"\n";
-        filteredFile<<"property float x\n"<<"property float y\n"<<"property float z\n"<<"property float red\n"<<"property float green\n"<<"property float blue\n"<<"property float alpha\n";
+        filteredFile<<"ply\n"<<"format ascii 1.0\n"<<"comment VCGLIB generated\n"<<"element vertex "<<vectXin.size()<<"\n";
+        filteredFile<<"property float x\n"<<"property float y\n"<<"property float z\n"<<"property uchar red\n"<<"property uchar green\n"<<"property uchar blue\n"<<"property ucharp alpha\n";
+        filteredFile<<"element face 0\n"<<"property list uchar int vertex_indices\n";
         filteredFile<<"end header\n";
 
         for(int i=0;i<vectXin.size();i++)
@@ -239,9 +193,12 @@ void writeply(const char* name2, const char* name3)
             filteredFile<<vectXin[i]<<" "<<vectYin[i]<<" "<<vectZin[i]<<" "<<vectRin[i]<<" "<<vectGin[i]<<" "<<vectBin[i]<<" "<<vectAin[i]<<std::endl;
         }
 
-        remainingFile<<"ply\n"<<"format ascii 1.0\n"<<"element vertex "<<vectXout.size()<<"\n";
-        remainingFile<<"property float x\n"<<"property float y\n"<<"property float z\n"<<"property float red\n"<<"property float green\n"<<"property float blue\n"<<"property float alpha\n";
+        remainingFile<<"ply\n"<<"format ascii 1.0\n"<<"comment VCGLIB generated\n"<<"element vertex "<<vectXout.size()<<"\n";
+        remainingFile<<"property float x\n"<<"property float y\n"<<"property float z\n"<<"property uchar red\n"<<"property uchar green\n"<<"property uchar blue\n"<<"property uchar alpha\n";
+        remainingFile<<"element face 0\n"<<"property list uchar int vertex_indices\n";
         remainingFile<<"end header\n";
+
+
 
         for(int i=0;i<vectXout.size();i++)
         {

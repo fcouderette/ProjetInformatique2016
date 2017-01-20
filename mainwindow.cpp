@@ -531,6 +531,7 @@ void MainWindow::chooseXml()
     msatmax = std::strtof(pmaxgreen_value, &pEnd);
     mlightmax = std::strtof(pmaxblue_value, &pEnd);
 
+    /*
     std::cout<<"\npminhue1_float : "<<mhuemin1<<std::endl;
     std::cout<<"pminhue2_float : "<<mhuemin2<<std::endl;
     std::cout<<"pminsat_float : "<<msatmin<<std::endl;
@@ -540,7 +541,7 @@ void MainWindow::chooseXml()
     std::cout<<"pmaxhue2_float : "<<mhuemax2<<std::endl;
     std::cout<<"pmaxsat_float : "<<msatmax<<std::endl;
     std::cout<<"pmaxlight_float : "<<mlightmax<<std::endl;
-
+*/
 
 }
 
@@ -560,7 +561,7 @@ void MainWindow::choosePly()
 void MainWindow::filterPly()
 {
     std::cout<<"\nfilterPly()"<<std::endl;
-/*
+
     // Chooses a path for filtered ply
     QString filtered = QFileDialog::getSaveFileName(0, QObject::tr("Save filtered ply"), "/home", QObject::tr("*.ply"));
     std::string filtered_text = filtered.toUtf8().constData();
@@ -572,10 +573,18 @@ void MainWindow::filterPly()
     char* remaining_good = (char*)remaining_text.c_str();
 
     readply(this,mplypath.toStdString().c_str(), filtered_good, remaining_good);
-*/
-readply(this,"/home/frederique/Bureau/input.ply", "/home/frederique/Bureau/1.ply", "/home/frederique/Bureau/2.ply");
+
+    //readply(this,"/home/frederique/Bureau/input.ply", "/home/frederique/Bureau/1.ply", "/home/frederique/Bureau/2.ply");
 
     std::cout<<"filterPly() ended"<<std::endl;
+/*
+    if(QMessageBox::question(this, "RAZ", "Remise à zero ?")==QMessageBox::Yes)
+    {
+        mValeur=0;
+        ui->text_valeur->setText(QString("Valeur : %1").arg(mValeur));
+        ui->horizontalSlider_valeur->setValue(mValeur);
+        // setValue verifie qu'on est bien entre -100 et 100
+    }*/
 
 } //filterPly
 

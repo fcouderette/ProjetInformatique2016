@@ -14,6 +14,11 @@ int main(int argc, char *argv[])
 {
     setlocale(LC_NUMERIC, "C");
 
+    // Forces locale to always use "." as decimal separator
+    setenv("LC_NUMERIC","POSIX",1);
+
+    QLocale::setDefault(QLocale::C);
+
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
