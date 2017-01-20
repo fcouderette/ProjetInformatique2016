@@ -184,7 +184,7 @@ void writeply(const char* name2, const char* name3)
     if(filteredFile && remainingFile)
     {
         filteredFile<<"ply\n"<<"format ascii 1.0\n"<<"comment VCGLIB generated\n"<<"element vertex "<<vectXin.size()<<"\n";
-        filteredFile<<"property float x\n"<<"property float y\n"<<"property float z\n"<<"property uchar red\n"<<"property uchar green\n"<<"property uchar blue\n"<<"property ucharp alpha\n";
+        filteredFile<<"property float x\n"<<"property float y\n"<<"property float z\n"<<"property uchar red\n"<<"property uchar green\n"<<"property uchar blue\n"<<"property uchar alpha\n";
         filteredFile<<"element face 0\n"<<"property list uchar int vertex_indices\n";
         filteredFile<<"end header\n";
 
