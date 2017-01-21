@@ -13,14 +13,12 @@ public:
     void addImage(QString);
     std::vector<float> sceneConvertRGBtoTSL(int R,int G,int B);
 
-
 signals:
     void colorSelected(QColor);
+
 public slots:
     void maskThings(std::vector<float> vect);
     void fromOneImageToAnother(int stateofbox);
-
-
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);

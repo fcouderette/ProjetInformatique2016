@@ -38,12 +38,8 @@ public:
 
     QString mplypath;
 
-
-
-
 protected:
     virtual void wheelEvent(QWheelEvent* event);
-
 
 private:
     Ui::MainWindow *ui;
@@ -54,22 +50,13 @@ private:
     float mValeur_H;
     float mValeur_S;
     float mValeur_L;
-    std::string mValeur_R_str;
-    std::string mValeur_G_str;
-    std::string mValeur_B_str;
+    //std::string mValeur_R_str;
+    //std::string mValeur_G_str;
+    //std::string mValeur_B_str;
     float mValeur_AH;
     float mValeur_AS;
     float mValeur_AL;
     std::vector<float> mselectionInterval;
-
-
-
-
-
-
-
-
-
 
 public slots:
     void chooseImage();

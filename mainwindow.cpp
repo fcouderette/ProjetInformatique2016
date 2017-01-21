@@ -1,25 +1,28 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <qmessagebox.h>
-#include <qinputdialog.h>
-#include <qfiledialog.h>
+
+#include <math.h>
+#include <string>
+#include <iostream>
+
+#include <tinyxml2.h>
+#define TIXML_USE_STL
+
+#include<rply.h>
+#include<rplyfile.h>
+
+#include<toolply.h>
+#include<fstream>
+
+#include <QMouseEvent>
 #include <QWidget>
 #include <QObject>
 #include <QString>
-#include <math.h>
-#include <tinyxml2.h>
-#define TIXML_USE_STL
-#include<rply.h>
-#include<rplyfile.h>
-#include<fstream>
 
-#include<toolply.h>
+#include <qmessagebox.h>
+#include <qinputdialog.h>
+#include <qfiledialog.h>
 
-
-
-#include <QMouseEvent>
-#include <string>
-#include <iostream>
 
 
 
@@ -56,39 +59,26 @@ MainWindow::MainWindow(QWidget *parent) :
     // Displays scene in graphicsView
     ui->graphicsView_Image->setScene(&mScene);
 
-    // Sets the image's size
+    // Sets the image's default size
     ui->graphicsView_Image->scale(0.4,0.4);
 
-    // Get colour
-    //QObject::connect(this, SIGNAL(pressLabel(QColor)), this , SLOT(getColourOfClickedPixel(QColor)));
-
-    // Initialize reference colour
-    //QObject::connect(this, SIGNAL(pressLabel(QColor)), this , SLOT(setReferenceColor(QColor)));
-
+    // Connection of sliders
     QObject::connect(ui->horizontalSlider_AT, SIGNAL(sliderReleased()), this , SLOT(setColorAmplitude()));
     QObject::connect(ui->horizontalSlider_AS, SIGNAL(sliderReleased()), this , SLOT(setColorAmplitude()));
     QObject::connect(ui->horizontalSlider_AL, SIGNAL(sliderReleased()), this , SLOT(setColorAmplitude()));
 
-
-
-    //QObject::connect(this, SIGNAL(setColorAmplitude()), this , SLOT(setColorAmplitude()));
-
     // Connexion of signal from class sceneclickable and method setReferenceColor from mainwindow
     QObject::connect(&mScene, SIGNAL(colorSelected(QColor)), this , SLOT(setReferenceColor(QColor)));
 
-    // Connexion of signal from class sceneclickable and method setReferenceColor from mainwindow
-    //QObject::connect(this, SIGNAL(changeSelect(std::vector<float>)), &mScene , SLOT(maskThings(std::vector<float>)));
-
-    // Show unfiltered image when clicked on "Show Original Image" button
+    // Connection with xheckbox to show unfiltered image
     QObject::connect(ui->showOriginalImage_checkBox, SIGNAL(stateChanged(int)), &mScene , SLOT(fromOneImageToAnother(int)));
 
-
-    //RAS
+    // Connection with button for xml writing
     QObject::connect(ui->pushButton_Export, SIGNAL(clicked()), this , SLOT(structurateXml()));
 
+    // Connections for reading, writing and getting path of xml and ply files
     QObject::connect(ui->pushButton_xml, SIGNAL(clicked()), this , SLOT(chooseXml()));
     QObject::connect(ui->pushButton_ply, SIGNAL(clicked()), this , SLOT(choosePly()));
-
     QObject::connect(ui->segment_pushButton, SIGNAL(clicked()), this , SLOT(filterPly()));
 }
 
@@ -97,7 +87,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//RAS
+
 void MainWindow::chooseImage()
 {
     std::cout<<"\n*** chooseImage() ***"<<std::endl;
@@ -109,9 +99,9 @@ void MainWindow::chooseImage()
     mScene.clear();
     // Associates image to scene
     mScene.addImage(chemin_image);
-}
+} //end chooseImage()
 
-//RAS
+
 void MainWindow::wheelEvent(QWheelEvent *event)
 {
     //holds how the view should position the scene during transformations
@@ -123,9 +113,9 @@ void MainWindow::wheelEvent(QWheelEvent *event)
     {ui->graphicsView_Image-> scale(myScale, myScale);}
     // Zooms out
     else {ui->graphicsView_Image->scale(1.0 / myScale, 1.0 / myScale);}
-}
+} // end wheelEvent()
 
-//RAS
+
 void MainWindow::setReferenceColor(QColor coul)
 {
     std::cout<<"\n*** setReferenceColor() ***"<<std::endl;
@@ -136,13 +126,10 @@ void MainWindow::setReferenceColor(QColor coul)
     mValeur_G=coul.green();
     mValeur_B=coul.blue();
 
-
     // Set new values for RGB (default : (0,0,0))
     ui->text_value_R->setText(QString("%1").arg(mValeur_R));//.toStdString());
     ui->text_value_G->setText(QString("%1").arg(mValeur_G));//.toStdString());
     ui->text_value_B->setText(QString("%1").arg(mValeur_B));//.toStdString());
-
-
 
     // Convert RGB to HSL
     mvectorHSL=convertRGBtoTSL(mValeur_R,mValeur_G,mValeur_B);
@@ -151,21 +138,11 @@ void MainWindow::setReferenceColor(QColor coul)
     ui->text_value_S->setText(QString("%1").arg(mvectorHSL[1]));
     ui->text_value_L->setText(QString("%1").arg(mvectorHSL[2]));
 
-
-
-
-
-    // Changer couleur cadre textEdit_CF
-    //ui->textEdit_CF->setTextBackgroundColor(QColor::rgb(mValeur_R,mValeur_G,mValeur_B));
-
-
-
-
     //mValeur_R=mValeurRef+ui.RedSlider->value();
     setColorAmplitude();
-}
+} // end setReferenceColor()
 
-//RAS
+
 std::vector<float> MainWindow::convertRGBtoTSL(int R,int G,int B)
 {
     std::cout<<"\n*** MainWindow::convertRGBtoTSL() ***"<<std::endl;
@@ -238,9 +215,9 @@ std::vector<float> MainWindow::convertRGBtoTSL(int R,int G,int B)
     ui->text_value_S->setText(QString("%1").arg(mValeur_S));
     ui->text_value_L->setText(QString("%1").arg(mValeur_L));
 */
-}
+} // end convertRGBtoTSL()
 
-//RAS
+
 std::vector<float> MainWindow::setColorAmplitude()
 {
     //std::cout<<"\n*** setColorAmplitude() ***"<<std::endl;
@@ -248,16 +225,16 @@ std::vector<float> MainWindow::setColorAmplitude()
     // Put value from slider inside mValeur_AH
     //ui->horizontalSlider_AT->setRange(0, 360-mValeur_H);
     mValeur_AH=ui->horizontalSlider_AT->value();
-    std::cout<<"mValeur_AH = "<<mValeur_AH<<std::endl;
-    //mValeur_R=mValeurRef+ui.RedSlider->value();
+    //std::cout<<"mValeur_AH = "<<mValeur_AH<<std::endl;
+
 
     //ui->horizontalSlider_AS->setRange(0, 100-mValeur_S);
     mValeur_AS=ui->horizontalSlider_AS->value();
-    std::cout<<"mValeur_AS = "<<mValeur_AS<<std::endl;
+    //std::cout<<"mValeur_AS = "<<mValeur_AS<<std::endl;
 
     //ui->horizontalSlider_AL->setRange(0, 100-mValeur_L);
     mValeur_AL=ui->horizontalSlider_AL->value();
-    std::cout<<"mValeur_AL = "<<mValeur_AL<<std::endl;
+    //std::cout<<"mValeur_AL = "<<mValeur_AL<<std::endl;
 
     // Return a vector containing length of selection interval
     mvectorAmpliHSL={mValeur_AH,mValeur_AS,mValeur_AL};
@@ -269,9 +246,9 @@ std::vector<float> MainWindow::setColorAmplitude()
     ui->showOriginalImage_checkBox->setEnabled(true);
 
     return mvectorAmpliHSL;
-}
+} // end setColorAmplitude()
 
-//RAS
+
 void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL)
 {
     // Create a vector containing interval of selection bounds
@@ -329,9 +306,9 @@ void MainWindow::defineSelection(std::vector<float> vectorHSL,std::vector<float>
     }
 
     mselectionInterval=defineSelection2(vectorHSL,vectorAmpliHSL);
-}
+} // end defineSelection()
 
-//RAS
+
 std::vector<float> MainWindow::defineSelection2(std::vector<float> vectorHSL,std::vector<float> vectorAmpliHSL)
     {
         // Create a vector containing interval of selection bounds
@@ -382,15 +359,15 @@ std::vector<float> MainWindow::defineSelection2(std::vector<float> vectorHSL,std
                 return selectionInterval;
             }
         }
-}
+} // end defineSelection2()
 
-//RAS
+
 void MainWindow::maskDefinedInterval(QImage img)
 {
     mScene.addPixmap(QPixmap::fromImage(img));
-}
+} // end maskDefinedInterval()
 
-//RAS
+
 void MainWindow::structurateXml()
 {
     QString xmlname = QFileDialog::getSaveFileName(0, QObject::tr("Save color parameters"), "/home",
@@ -399,7 +376,7 @@ void MainWindow::structurateXml()
     std::string xmlname_text = xmlname.toUtf8().constData(); //(char*)deux.c_str();
     // Converts string to char
     char* xmlname_good = (char*)xmlname_text.c_str();
-    std::cout<<"xmlname "<<xmlname_good<<std::endl;
+    //std::cout<<"xmlname "<<xmlname_good<<std::endl;
 
     // Initialises document
     tinyxml2::XMLDocument xmlDoc;
@@ -409,14 +386,14 @@ void MainWindow::structurateXml()
     xmlDoc.InsertFirstChild(decl);
     xmlDoc.InsertEndChild(decl);
 
-
     // Creates root
     tinyxml2::XMLNode * pColorCriterias = xmlDoc.NewElement("colorCriterias");
     xmlDoc.InsertFirstChild(pColorCriterias);
 
-
+    // Creates minimum bounds of interval
     tinyxml2::XMLElement * pMinInterval = xmlDoc.NewElement("minInterval");
 
+    // Creates elements
     tinyxml2::XMLElement * pRedMin1 = xmlDoc.NewElement("hue1");
     pRedMin1->SetText(mselectionInterval[0]);
     pMinInterval->InsertEndChild(pRedMin1);
@@ -433,11 +410,13 @@ void MainWindow::structurateXml()
     pBlueMin->SetText(mselectionInterval[6]);
     pMinInterval->InsertEndChild(pBlueMin);
 
+    // End of minimum set
     pColorCriterias->InsertEndChild(pMinInterval);
 
-
+    // Creates maximum bounds of interval
     tinyxml2::XMLElement * pMaxInterval = xmlDoc.NewElement("maxInterval");
 
+    // Creates elements
     tinyxml2::XMLElement * pRedMax1 = xmlDoc.NewElement("hue1");
     pRedMax1->SetText(mselectionInterval[1]);
     pMaxInterval->InsertEndChild(pRedMax1);
@@ -454,17 +433,15 @@ void MainWindow::structurateXml()
     pBlueMax->SetText(mselectionInterval[7]);
     pMaxInterval->InsertEndChild(pBlueMax);
 
+    // End of maximum set
     pColorCriterias->InsertEndChild(pMaxInterval);
 
-
-
-
+    // Save xml file
     xmlDoc.SaveFile(xmlname_good);
 
-}
+} // end structurateXml()
 
 
-//RAS
 void MainWindow::chooseXml()
 {
     // Gets back the image's path
@@ -477,11 +454,8 @@ void MainWindow::chooseXml()
 
     // Parses xml
     tinyxml2::XMLDocument xmlDoc;
-
     xmlDoc.LoadFile(xmlpath.toUtf8().constData());
-
     tinyxml2::XMLNode* proot = xmlDoc.FirstChildElement("colorCriterias");
-
     tinyxml2::XMLElement* pminInterval = proot->FirstChildElement("minInterval");
 
 
@@ -506,19 +480,19 @@ void MainWindow::chooseXml()
     // Inferior bound
     tinyxml2::XMLElement* pmaxred1 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "hue1" );
     const char* pmaxred1_value = pmaxred1->GetText();
-    std::cout<<"\npmaxred1_value : "<<pmaxred1_value<<std::endl;
+    //std::cout<<"\npmaxred1_value : "<<pmaxred1_value<<std::endl;
 
     tinyxml2::XMLElement* pmaxred2 = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "hue2" );
     const char* pmaxred2_value = pmaxred2->GetText();
-    std::cout<<"pmaxred2_value : "<<pmaxred2_value<<std::endl;
+    //std::cout<<"pmaxred2_value : "<<pmaxred2_value<<std::endl;
 
     tinyxml2::XMLElement* pmaxgreen = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "saturation" );
     const char* pmaxgreen_value = pmaxgreen->GetText();
-    std::cout<<"pmaxgreen_value : "<<pmaxgreen_value<<std::endl;
+    //std::cout<<"pmaxgreen_value : "<<pmaxgreen_value<<std::endl;
 
     tinyxml2::XMLElement* pmaxblue = xmlDoc.FirstChildElement( "colorCriterias" )->FirstChildElement( "maxInterval" )->FirstChildElement( "lightness" );
     const char* pmaxblue_value = pmaxblue->GetText();
-    std::cout<<"pmaxblue_value : "<<pmaxblue_value<<std::endl;
+    //std::cout<<"pmaxblue_value : "<<pmaxblue_value<<std::endl;
 
     char* pEnd;
     mhuemin1 = std::strtof(pminred1_value, &pEnd);
@@ -543,19 +517,18 @@ void MainWindow::chooseXml()
     std::cout<<"pmaxlight_float : "<<mlightmax<<std::endl;
 */
 
-}
+} // end chooseXml()
 
-//RAS
+
 void MainWindow::choosePly()
 {
-    // Gets back the image's path
+    // Gets back the file's path
 
     mplypath=QFileDialog::getOpenFileName(this,QObject::tr("Select ply file"), "/home",QObject::tr("XML files (*.ply)"));
 
     ui->ply_label->setText(mplypath);
 
-}
-
+} //end choosePly()
 
 
 void MainWindow::filterPly()
@@ -574,19 +547,10 @@ void MainWindow::filterPly()
 
     readply(this,mplypath.toStdString().c_str(), filtered_good, remaining_good);
 
-    //readply(this,"/home/frederique/Bureau/input.ply", "/home/frederique/Bureau/1.ply", "/home/frederique/Bureau/2.ply");
-
     std::cout<<"filterPly() ended"<<std::endl;
-/*
-    if(QMessageBox::question(this, "RAZ", "Remise à zero ?")==QMessageBox::Yes)
-    {
-        mValeur=0;
-        ui->text_valeur->setText(QString("Valeur : %1").arg(mValeur));
-        ui->horizontalSlider_valeur->setValue(mValeur);
-        // setValue verifie qu'on est bien entre -100 et 100
-    }*/
 
-} //filterPly
+
+} //end filterPly()
 
 
 
