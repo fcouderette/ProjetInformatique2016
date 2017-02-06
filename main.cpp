@@ -1,3 +1,7 @@
+/*
+@author: Frederique Couderette
+12/2016-01-2017
+*/
 
 #include <QApplication>
 #include <tinyxml2.h>

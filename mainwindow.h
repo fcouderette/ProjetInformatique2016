@@ -1,3 +1,8 @@
+/*
+@author: Frederique Couderette
+12/2016-01-2017
+*/
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 

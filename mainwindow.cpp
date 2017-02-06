@@ -1,3 +1,8 @@
+/*
+@author: Frederique Couderette
+12/2016-01-2017
+*/
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 

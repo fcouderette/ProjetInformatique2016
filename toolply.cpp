@@ -1,3 +1,8 @@
+/*
+@author: Frederique Couderette
+12/2016-01-2017
+*/
+
 #include"toolply.h"
 #include"fstream"
 
@@ -218,7 +223,7 @@ void writeply(const char* name2, const char* name3)
         filteredFile<<"ply\n"<<"format ascii 1.0\n"<<"comment VCGLIB generated\n"<<"element vertex "<<vectXin.size()<<"\n";
         filteredFile<<"property float x\n"<<"property float y\n"<<"property float z\n"<<"property uchar red\n"<<"property uchar green\n"<<"property uchar blue\n";//<<"property uchar alpha\n";
         filteredFile<<"element face 0\n"<<"property list uchar int vertex_indices\n";
-        filteredFile<<"end header\n";
+        filteredFile<<"end_header\n";
 
         for(int i=0;i<vectXin.size();i++)
         {
@@ -229,7 +234,7 @@ void writeply(const char* name2, const char* name3)
         remainingFile<<"ply\n"<<"format ascii 1.0\n"<<"comment VCGLIB generated\n"<<"element vertex "<<vectXout.size()<<"\n";
         remainingFile<<"property float x\n"<<"property float y\n"<<"property float z\n"<<"property uchar red\n"<<"property uchar green\n"<<"property uchar blue\n";//<<"property uchar alpha\n";
         remainingFile<<"element face 0\n"<<"property list uchar int vertex_indices\n";
-        remainingFile<<"end header\n";
+        remainingFile<<"end_header\n";
 
         for(int i=0;i<vectXout.size();i++)
         {
